@@ -47,7 +47,7 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
                 .setSnakeParts(snakeParts)
                 .build();
 
-        getNextFruit(snakeInstance);
+        getNextFood(snakeInstance);
 
         snake.setSnakeInstance(snakeInstance);
     }
@@ -77,17 +77,17 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
         }
     }
 
-    private void getNextFruit(final SnakeInstance snakeInstance) {
+    private void getNextFood(final SnakeInstance snakeInstance) {
         final List<Point> snakeParts = snakeInstance.getSnakeParts();
-        final List<Point> fruitPossibleLocations = Lists.newArrayList(gridLocations);
+        final List<Point> foodPossibleLocations = Lists.newArrayList(gridLocations);
 
-        fruitPossibleLocations.removeAll(snakeParts);
+        foodPossibleLocations.removeAll(snakeParts);
 
-        final int fruitIndex = random.nextInt(fruitPossibleLocations.size());
+        final int foodIndex = random.nextInt(foodPossibleLocations.size());
 
-        final Point fruitLocation = fruitPossibleLocations.get(fruitIndex);
+        final Point foodLocation = foodPossibleLocations.get(foodIndex);
 
-        snakeInstance.setFruitLocation(fruitLocation);
+        snakeInstance.setFoodLocation(foodLocation);
     }
 
     private static List<Point> createGridLocations() {
@@ -134,9 +134,9 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
         snakeInstance.setSnakeParts(newSnakeParts);
 
-        if (snakeInstance.getFruitLocation().equals(newLocation)) {
+        if (snakeInstance.getFoodLocation().equals(newLocation)) {
             newSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
-            getNextFruit(snakeInstance);
+            getNextFood(snakeInstance);
         }
     }
 

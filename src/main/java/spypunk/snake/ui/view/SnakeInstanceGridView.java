@@ -118,7 +118,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
             renderSnakePart(graphics, snakePartLocation, snakePart);
         }
 
-        renderFruit(graphics, snakeInstance);
+        renderFood(graphics, snakeInstance);
 
         final State state = snakeInstance.getState();
 
@@ -137,7 +137,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         final Point previousSnakePartLocation = snakeParts.get(i - 1);
 
         if (nextSnakePartLocation == null) {
-            return getSnakeTailPart(snakePartLocation, nextSnakePartLocation, previousSnakePartLocation);
+            return getSnakeTailPart(snakePartLocation, previousSnakePartLocation);
         }
 
         if (previousSnakePartLocation.x == nextSnakePartLocation.x) {
@@ -151,31 +151,39 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         return getSnakeCornerPart(snakePartLocation, nextSnakePartLocation, previousSnakePartLocation);
     }
 
-    private SnakePart getSnakeTailPart(final Point snakePartLocation, final Point nextSnakePartLocation,
-            final Point previousSnakePartLocation) {
+    private SnakePart getSnakeTailPart(final Point snakePartLocation, final Point previousSnakePartLocation) {
         final boolean previousXLesser = previousSnakePartLocation.x < snakePartLocation.x;
         final boolean previousXGreater = previousSnakePartLocation.x > snakePartLocation.x;
+        final boolean previousYLesser = previousSnakePartLocation.y < snakePartLocation.y;
 
-        if (previousXLesser || previousXGreater) {
-            return SnakePart.HORIZONTAL;
+        if (previousXLesser) {
+            return SnakePart.TAIL_LEFT;
         }
 
-        return SnakePart.VERTICAL;
+        if (previousXGreater) {
+            return SnakePart.TAIL_RIGHT;
+        }
+
+        if (previousYLesser) {
+            return SnakePart.TAIL_TOP;
+        }
+
+        return SnakePart.TAIL_BOTTOM;
     }
 
     private SnakePart getSnakeCornerPart(final Point snakePartLocation, final Point nextSnakePartLocation,
             final Point previousSnakePartLocation) {
         final boolean previousXLesser = previousSnakePartLocation.x < snakePartLocation.x;
-        final boolean previousYLesser = nextSnakePartLocation.y < snakePartLocation.y;
+        final boolean nextYLesser = nextSnakePartLocation.y < snakePartLocation.y;
         final boolean nextXLesser = nextSnakePartLocation.x < snakePartLocation.x;
-        final boolean nextYLesser = previousSnakePartLocation.y < snakePartLocation.y;
+        final boolean previousYLesser = previousSnakePartLocation.y < snakePartLocation.y;
         final boolean nextYGreater = nextSnakePartLocation.y > snakePartLocation.y;
         final boolean previousYGreater = previousSnakePartLocation.y > snakePartLocation.y;
         final boolean nextXGreater = nextSnakePartLocation.x > snakePartLocation.x;
         final boolean previousXGreater = previousSnakePartLocation.x > snakePartLocation.x;
 
-        if (previousXLesser && previousYLesser
-                || nextXLesser && nextYLesser) {
+        if (previousXLesser && nextYLesser
+                || nextXLesser && previousYLesser) {
             return SnakePart.BOTTOM_RIGHT;
         }
 
@@ -184,8 +192,8 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
             return SnakePart.TOP_RIGHT;
         }
 
-        if (nextYLesser && nextXGreater
-                || previousYLesser && previousXGreater) {
+        if (previousYLesser && nextXGreater
+                || nextYLesser && previousXGreater) {
             return SnakePart.BOTTOM_LEFT;
         }
 
@@ -195,20 +203,25 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
     private SnakePart getSnakeHeadPart(final Direction snakeDirection) {
         switch (snakeDirection) {
         case DOWN:
+            return SnakePart.HEAD_BOTTOM;
+
         case UP:
-            return SnakePart.VERTICAL;
+            return SnakePart.HEAD_TOP;
+
+        case LEFT:
+            return SnakePart.HEAD_LEFT;
 
         default:
-            return SnakePart.HORIZONTAL;
+            return SnakePart.HEAD_RIGHT;
         }
     }
 
-    private void renderFruit(final Graphics2D graphics, final SnakeInstance snakeInstance) {
-        final Image fruitImage = imageCache.getFruitImage();
+    private void renderFood(final Graphics2D graphics, final SnakeInstance snakeInstance) {
+        final Image foodImage = imageCache.getFoodImage();
 
-        final Rectangle rectangle = getRectangle(snakeInstance.getFruitLocation());
+        final Rectangle rectangle = getRectangle(snakeInstance.getFoodLocation());
 
-        SwingUtils.drawImage(graphics, fruitImage, rectangle);
+        SwingUtils.drawImage(graphics, foodImage, rectangle);
     }
 
     private void renderSnakePart(final Graphics2D graphics, final Point location, final SnakePart snakePart) {

@@ -38,13 +38,13 @@ public class ImageCacheImpl implements ImageCache {
 
     private static final String SNAKE_FOLDER = "/img/snake/".intern();
 
-    private static final String FRUIT_FOLDER = "/img/fruit/".intern();
+    private static final String FOOD_FOLDER = "/img/food/".intern();
 
-    private static final String FRUIT_FILENAME = "fruit".intern();
+    private static final String FOOD_FILENAME = "food".intern();
 
     private final Map<Icon, Image> icons = createIcons();
 
-    private final Image fruitImage = createImage(FRUIT_FOLDER, FRUIT_FILENAME);
+    private final Image foodImage = createImage(FOOD_FOLDER, FOOD_FILENAME);
 
     private final Map<SnakePart, Image> snakeImages = createSnakesImages();
 
@@ -59,8 +59,8 @@ public class ImageCacheImpl implements ImageCache {
     }
 
     @Override
-    public Image getFruitImage() {
-        return fruitImage;
+    public Image getFoodImage() {
+        return foodImage;
     }
 
     private static Image createIcon(final Icon icon) {

@@ -19,5 +19,5 @@ public interface ImageCache {
 
     Image getSnakeImage(SnakePart snakePart);
 
-    Image getFruitImage();
+    Image getFoodImage();
 }

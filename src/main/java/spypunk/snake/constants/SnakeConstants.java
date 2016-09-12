@@ -10,11 +10,11 @@ package spypunk.snake.constants;
 
 public final class SnakeConstants {
 
-    public static final int WIDTH = 20;
+    public static final int WIDTH = 30;
 
-    public static final int HEIGHT = 20;
+    public static final int HEIGHT = 25;
 
-    public static final int DEFAULT_SPEED = 6;
+    public static final int DEFAULT_SPEED = 3;
 
     private SnakeConstants() {
         throw new IllegalAccessError();

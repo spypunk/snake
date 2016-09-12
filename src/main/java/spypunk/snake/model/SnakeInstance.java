@@ -32,7 +32,7 @@ public class SnakeInstance {
 
     private Optional<Direction> newSnakeDirection = Optional.empty();
 
-    private Point fruitLocation;
+    private Point foodLocation;
 
     public enum State {
         RUNNING {
@@ -139,12 +139,12 @@ public class SnakeInstance {
         this.snakeParts = snakeParts;
     }
 
-    public Point getFruitLocation() {
-        return fruitLocation;
+    public Point getFoodLocation() {
+        return foodLocation;
     }
 
-    public void setFruitLocation(final Point fruitLocation) {
-        this.fruitLocation = fruitLocation;
+    public void setFoodLocation(final Point foodLocation) {
+        this.foodLocation = foodLocation;
     }
 
     public Direction getSnakeDirection() {
