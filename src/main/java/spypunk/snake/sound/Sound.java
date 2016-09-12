@@ -14,7 +14,8 @@ import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 
 public enum Sound {
 
-    BACKGROUND(Format.MP3, true);
+    BACKGROUND(Format.MP3, true),
+    GAME_OVER(Format.MP3, true);
 
     public enum Format {
         MP3 {

@@ -15,6 +15,7 @@ import spypunk.snake.model.Direction;
 import spypunk.snake.model.SnakeInstance;
 import spypunk.snake.model.SnakeInstance.State;
 import spypunk.snake.service.SnakeInstanceService;
+import spypunk.snake.sound.Sound;
 import spypunk.snake.sound.service.SoundService;
 import spypunk.snake.ui.controller.SnakeController;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
@@ -42,7 +43,7 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
         return snake -> {
             snakeInstanceService.create(snake);
 
-            // soundService.playMusic(Sound.BACKGROUND);
+            soundService.playMusic(Sound.BACKGROUND);
         };
     }
 
@@ -86,8 +87,6 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
 
     @Override
     public SnakeControllerCommand createGameOverSnakeControllerCommand() {
-        return snake -> {
-            // TODO play game over music
-        };
+        return snake -> soundService.playMusic(Sound.GAME_OVER);
     }
 }
