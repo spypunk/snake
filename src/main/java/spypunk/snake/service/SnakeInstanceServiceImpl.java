@@ -38,7 +38,7 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
     public void create(final Snake snake) {
         final List<Point> snakeParts = Lists.newArrayList();
 
-        int x = SnakeConstants.WIDTH / 2;
+        final int x = SnakeConstants.WIDTH / 2;
 
         snakeParts.add(new Point(x, 2));
         snakeParts.add(new Point(x, 1));
