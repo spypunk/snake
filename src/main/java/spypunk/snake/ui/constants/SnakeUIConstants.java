@@ -12,7 +12,7 @@ import java.awt.Color;
 
 public final class SnakeUIConstants {
 
-    public static final int CELL_SIZE = 20;
+    public static final int CELL_SIZE = 18;
 
     public static final Color DEFAULT_FONT_COLOR = Color.LIGHT_GRAY;
 

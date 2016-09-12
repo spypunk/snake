@@ -10,7 +10,7 @@ package spypunk.snake.constants;
 
 public final class SnakeConstants {
 
-    public static final int WIDTH = 30;
+    public static final int WIDTH = 35;
 
     public static final int HEIGHT = 25;
 
