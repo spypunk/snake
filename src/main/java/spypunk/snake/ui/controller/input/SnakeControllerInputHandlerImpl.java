@@ -40,13 +40,13 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
 
     @Inject
     public SnakeControllerInputHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory) {
-        releasedKeyCodesHandlers.put(KeyEvent.VK_LEFT,
+        pressedKeyCodesHandlers.put(KeyEvent.VK_LEFT,
             () -> snakeControllerCommandFactory.createDirectionSnakeControllerCommand(Direction.LEFT));
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_RIGHT,
+        pressedKeyCodesHandlers.put(KeyEvent.VK_RIGHT,
             () -> snakeControllerCommandFactory.createDirectionSnakeControllerCommand(Direction.RIGHT));
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_DOWN,
+        pressedKeyCodesHandlers.put(KeyEvent.VK_DOWN,
             () -> snakeControllerCommandFactory.createDirectionSnakeControllerCommand(Direction.DOWN));
 
         releasedKeyCodesHandlers.put(KeyEvent.VK_SPACE,
@@ -54,7 +54,7 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
 
         releasedKeyCodesHandlers.put(KeyEvent.VK_P, snakeControllerCommandFactory::createPauseSnakeControllerCommand);
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_UP,
+        pressedKeyCodesHandlers.put(KeyEvent.VK_UP,
             () -> snakeControllerCommandFactory.createDirectionSnakeControllerCommand(Direction.UP));
 
         releasedKeyCodesHandlers.put(KeyEvent.VK_M, snakeControllerCommandFactory::createMuteSnakeControllerCommand);
