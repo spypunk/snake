@@ -38,12 +38,14 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
     public void create(final Snake snake) {
         final List<Point> snakeParts = Lists.newArrayList();
 
-        snakeParts.add(new Point(5, 5));
-        snakeParts.add(new Point(6, 5));
-        snakeParts.add(new Point(7, 5));
+        Point headLocation = new Point(SnakeConstants.WIDTH / 2, SnakeConstants.HEIGHT / 2);
+
+        snakeParts.add(headLocation);
+        snakeParts.add(new Point(headLocation.x + 1, headLocation.y));
+        snakeParts.add(new Point(headLocation.x + 2, headLocation.y));
 
         final SnakeInstance snakeInstance = SnakeInstance.Builder.instance()
-                .setSpeed(SnakeConstants.DEFAULT_SPEED).setState(State.RUNNING).setSnakeDirection(Direction.LEFT)
+                .setSpeed(SnakeConstants.DEFAULT_SPEED).setState(State.RUNNING).setSnakeDirection(Direction.UP)
                 .setSnakeParts(snakeParts)
                 .build();
 
