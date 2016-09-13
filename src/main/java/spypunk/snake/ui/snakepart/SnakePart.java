@@ -20,8 +20,5 @@ public enum SnakePart {
     HEAD_TOP,
     HEAD_LEFT,
     HEAD_RIGHT,
-    TAIL_BOTTOM,
-    TAIL_TOP,
-    TAIL_LEFT,
-    TAIL_RIGHT
+    TAIL
 }

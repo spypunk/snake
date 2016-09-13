@@ -137,7 +137,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         final Point previousSnakePartLocation = snakeParts.get(i - 1);
 
         if (nextSnakePartLocation == null) {
-            return getSnakeTailPart(snakePartLocation, previousSnakePartLocation);
+            return SnakePart.TAIL;
         }
 
         if (previousSnakePartLocation.x == nextSnakePartLocation.x) {
@@ -149,26 +149,6 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         }
 
         return getSnakeCornerPart(snakePartLocation, nextSnakePartLocation, previousSnakePartLocation);
-    }
-
-    private SnakePart getSnakeTailPart(final Point snakePartLocation, final Point previousSnakePartLocation) {
-        final boolean previousXLesser = previousSnakePartLocation.x < snakePartLocation.x;
-        final boolean previousXGreater = previousSnakePartLocation.x > snakePartLocation.x;
-        final boolean previousYLesser = previousSnakePartLocation.y < snakePartLocation.y;
-
-        if (previousXLesser) {
-            return SnakePart.TAIL_LEFT;
-        }
-
-        if (previousXGreater) {
-            return SnakePart.TAIL_RIGHT;
-        }
-
-        if (previousYLesser) {
-            return SnakePart.TAIL_TOP;
-        }
-
-        return SnakePart.TAIL_BOTTOM;
     }
 
     private SnakePart getSnakeCornerPart(final Point snakePartLocation, final Point nextSnakePartLocation,
