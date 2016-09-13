@@ -52,19 +52,27 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
         return snake -> {
             final SnakeInstance snakeInstance = snake.getSnakeInstance();
 
-            snakeInstanceService.pause(snakeInstance);
+            if (snakeInstance != null) {
+                snakeInstanceService.pause(snakeInstance);
 
-            final State state = snakeInstance.getState();
+                final State state = snakeInstance.getState();
 
-            if (State.RUNNING.equals(state) || State.PAUSED.equals(state)) {
-                soundService.pauseMusic();
+                if (State.RUNNING.equals(state) || State.PAUSED.equals(state)) {
+                    soundService.pauseMusic();
+                }
             }
         };
     }
 
     @Override
     public SnakeControllerCommand createDirectionSnakeControllerCommand(final Direction direction) {
-        return snake -> snakeInstanceService.updateDirection(snake.getSnakeInstance(), direction);
+        return snake -> {
+            final SnakeInstance snakeInstance = snake.getSnakeInstance();
+
+            if (snakeInstance != null) {
+                snakeInstanceService.updateDirection(snake.getSnakeInstance(), direction);   
+            }
+        };
     }
 
     @Override
