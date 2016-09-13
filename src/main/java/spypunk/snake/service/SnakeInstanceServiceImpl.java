@@ -30,6 +30,8 @@ import spypunk.snake.model.SnakeInstance.State;
 @Singleton
 public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
+    private static final int POINTS_PER_FOOD = 10;
+
     private final List<Point> gridLocations = createGridLocations();
 
     private final Random random = new Random();
@@ -138,6 +140,7 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
         if (snakeInstance.getFoodLocation().equals(newLocation)) {
             newSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
+            snakeInstance.setScore(snakeInstance.getScore() + POINTS_PER_FOOD);
             getNextFood(snakeInstance);
         }
     }

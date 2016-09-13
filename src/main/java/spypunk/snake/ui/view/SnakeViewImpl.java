@@ -42,6 +42,8 @@ public class SnakeViewImpl implements SnakeView {
 
     private final SnakeInstanceGridView snakeInstanceGridView;
 
+    private final SnakeInstanceScoreView snakeInstanceScoreView;
+
     private final JLabel muteLabel;
 
     private final ImageIcon muteImageIcon;
@@ -112,6 +114,7 @@ public class SnakeViewImpl implements SnakeView {
             final ImageCache imageCache,
             final Snake snake) {
         snakeInstanceGridView = new SnakeInstanceGridView(fontCache, imageCache, snake);
+        snakeInstanceScoreView = new SnakeInstanceScoreView(fontCache, snake);
 
         muteImageIcon = new ImageIcon(imageCache.getIcon(Icon.MUTE));
         unmuteImageIcon = new ImageIcon(imageCache.getIcon(Icon.UNMUTE));
@@ -132,12 +135,13 @@ public class SnakeViewImpl implements SnakeView {
         bottomPanel.setBackground(Color.BLACK);
 
         bottomPanel.add(muteLabel, BorderLayout.WEST);
+        bottomPanel.add(snakeInstanceScoreView, BorderLayout.NORTH);
         bottomPanel.add(urlLabel, BorderLayout.EAST);
 
         final JPanel centerPanel = new JPanel(new BorderLayout(CELL_SIZE, 0));
 
         centerPanel.setBackground(Color.BLACK);
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE, CELL_SIZE, CELL_SIZE, CELL_SIZE));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE, CELL_SIZE, 10, CELL_SIZE));
 
         centerPanel.add(snakeInstanceGridView, BorderLayout.CENTER);
 
@@ -178,5 +182,6 @@ public class SnakeViewImpl implements SnakeView {
 
     private void doUpdate() {
         snakeInstanceGridView.update();
+        snakeInstanceScoreView.update();
     }
 }

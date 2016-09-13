@@ -70,7 +70,7 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
             final SnakeInstance snakeInstance = snake.getSnakeInstance();
 
             if (snakeInstance != null) {
-                snakeInstanceService.updateDirection(snake.getSnakeInstance(), direction);   
+                snakeInstanceService.updateDirection(snake.getSnakeInstance(), direction);
             }
         };
     }
