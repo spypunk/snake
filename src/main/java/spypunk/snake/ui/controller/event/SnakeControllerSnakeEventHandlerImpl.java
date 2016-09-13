@@ -35,6 +35,9 @@ public class SnakeControllerSnakeEventHandlerImpl implements SnakeControllerSnak
     public SnakeControllerSnakeEventHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory) {
         snakeControllerCommands.put(SnakeEvent.GAME_OVER,
             snakeControllerCommandFactory::createGameOverSnakeControllerCommand);
+
+        snakeControllerCommands.put(SnakeEvent.FOOD_EATEN,
+            snakeControllerCommandFactory::createFoodEatenSnakeControllerCommand);
     }
 
     @Override

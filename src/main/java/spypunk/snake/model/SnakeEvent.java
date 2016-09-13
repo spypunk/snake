@@ -9,5 +9,6 @@
 package spypunk.snake.model;
 
 public enum SnakeEvent {
-    GAME_OVER
+    GAME_OVER,
+    FOOD_EATEN
 }

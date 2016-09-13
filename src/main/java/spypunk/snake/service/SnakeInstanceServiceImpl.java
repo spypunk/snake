@@ -141,6 +141,7 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
         if (snakeInstance.getFoodLocation().equals(newLocation)) {
             newSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
             snakeInstance.setScore(snakeInstance.getScore() + POINTS_PER_FOOD);
+            snakeInstance.getSnakeEvents().add(SnakeEvent.FOOD_EATEN);
             getNextFood(snakeInstance);
         }
     }

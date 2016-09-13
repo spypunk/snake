@@ -26,4 +26,6 @@ public interface SnakeControllerCommandFactory {
     SnakeControllerCommand createDecreaseVolumeSnakeControllerCommand();
 
     SnakeControllerCommand createGameOverSnakeControllerCommand();
+
+    SnakeControllerCommand createFoodEatenSnakeControllerCommand();
 }

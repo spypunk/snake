@@ -97,4 +97,9 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
     public SnakeControllerCommand createGameOverSnakeControllerCommand() {
         return snake -> soundService.playMusic(Sound.GAME_OVER);
     }
+
+    @Override
+    public SnakeControllerCommand createFoodEatenSnakeControllerCommand() {
+        return snake -> soundService.playSound(Sound.FOOD_EATEN);
+    }
 }
