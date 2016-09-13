@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
 
 import spypunk.snake.exception.SnakeException;
 import spypunk.snake.ui.icon.Icon;
-import spypunk.snake.ui.image.SnakePart;
+import spypunk.snake.ui.snakepart.SnakePart;
 
 @Singleton
 public class ImageCacheImpl implements ImageCache {

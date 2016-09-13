@@ -6,7 +6,7 @@
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package spypunk.snake.ui.image;
+package spypunk.snake.ui.snakepart;
 
 public enum SnakePart {
 

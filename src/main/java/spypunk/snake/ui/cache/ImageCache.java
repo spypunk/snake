@@ -11,7 +11,7 @@ package spypunk.snake.ui.cache;
 import java.awt.Image;
 
 import spypunk.snake.ui.icon.Icon;
-import spypunk.snake.ui.image.SnakePart;
+import spypunk.snake.ui.snakepart.SnakePart;
 
 public interface ImageCache {
 

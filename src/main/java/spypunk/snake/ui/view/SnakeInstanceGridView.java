@@ -34,7 +34,7 @@ import spypunk.snake.model.SnakeInstance.State;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.FontType;
 import spypunk.snake.ui.font.cache.FontCache;
-import spypunk.snake.ui.image.SnakePart;
+import spypunk.snake.ui.snakepart.SnakePart;
 import spypunk.snake.ui.util.SwingUtils;
 
 public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
