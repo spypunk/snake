@@ -34,7 +34,7 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
     private static final int BONUS_FOOD_RANDOM = 10;
 
-    private static final int BONUS_FOOD_FRAME_LIMIT = 125;
+    private static final int BONUS_FOOD_FRAME_LIMIT = 120;
 
     private final List<Point> gridLocations = createGridLocations();
 
