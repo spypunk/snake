@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 import spypunk.snake.exception.SnakeException;
+import spypunk.snake.model.Food.Type;
 import spypunk.snake.ui.icon.Icon;
 import spypunk.snake.ui.snakepart.SnakePart;
 
@@ -40,13 +41,11 @@ public class ImageCacheImpl implements ImageCache {
 
     private static final String FOOD_FOLDER = "/img/food/".intern();
 
-    private static final String FOOD_FILENAME = "food".intern();
-
     private final Map<Icon, Image> icons = createIcons();
 
-    private final Image foodImage = createImage(FOOD_FOLDER, FOOD_FILENAME);
-
     private final Map<SnakePart, Image> snakeImages = createSnakesImages();
+
+    private final Map<Type, Image> foodImages = createFoodImages();
 
     @Override
     public Image getIcon(final Icon icon) {
@@ -59,8 +58,8 @@ public class ImageCacheImpl implements ImageCache {
     }
 
     @Override
-    public Image getFoodImage() {
-        return foodImage;
+    public Image getFoodImage(final Type foodType) {
+        return foodImages.get(foodType);
     }
 
     private static Image createIcon(final Icon icon) {
@@ -69,6 +68,10 @@ public class ImageCacheImpl implements ImageCache {
 
     private static Image createSnakeImage(final SnakePart snakePart) {
         return createImage(SNAKE_FOLDER, snakePart.name().toLowerCase());
+    }
+
+    private static Image createFoodImage(final Type foodType) {
+        return createImage(FOOD_FOLDER, foodType.name().toLowerCase());
     }
 
     private static Image createImage(final String imageFolder, final String fileName) {
@@ -90,5 +93,10 @@ public class ImageCacheImpl implements ImageCache {
     private static Map<SnakePart, Image> createSnakesImages() {
         return Lists.newArrayList(SnakePart.values()).stream().collect(Collectors.toMap(Function.identity(),
             ImageCacheImpl::createSnakeImage));
+    }
+
+    private static Map<Type, Image> createFoodImages() {
+        return Lists.newArrayList(Type.values()).stream().collect(Collectors.toMap(Function.identity(),
+            ImageCacheImpl::createFoodImage));
     }
 }

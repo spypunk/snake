@@ -28,6 +28,7 @@ import com.google.common.collect.Maps;
 
 import spypunk.snake.constants.SnakeConstants;
 import spypunk.snake.model.Direction;
+import spypunk.snake.model.Food;
 import spypunk.snake.model.Snake;
 import spypunk.snake.model.SnakeInstance;
 import spypunk.snake.model.SnakeInstance.State;
@@ -197,9 +198,11 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
     }
 
     private void renderFood(final Graphics2D graphics, final SnakeInstance snakeInstance) {
-        final Image foodImage = imageCache.getFoodImage();
+        final Food food = snakeInstance.getFood();
 
-        final Rectangle rectangle = getRectangle(snakeInstance.getFoodLocation());
+        final Image foodImage = imageCache.getFoodImage(food.getType());
+
+        final Rectangle rectangle = getRectangle(food.getLocation());
 
         SwingUtils.drawImage(graphics, foodImage, rectangle);
     }

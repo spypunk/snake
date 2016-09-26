@@ -22,6 +22,8 @@ import com.google.common.collect.Lists;
 
 import spypunk.snake.constants.SnakeConstants;
 import spypunk.snake.model.Direction;
+import spypunk.snake.model.Food;
+import spypunk.snake.model.Food.Type;
 import spypunk.snake.model.Snake;
 import spypunk.snake.model.SnakeEvent;
 import spypunk.snake.model.SnakeInstance;
@@ -30,7 +32,9 @@ import spypunk.snake.model.SnakeInstance.State;
 @Singleton
 public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
-    private static final int POINTS_PER_FOOD = 10;
+    private static final int BONUS_FOOD_RANDOM = 10;
+
+    private static final int BONUS_FOOD_FRAME_LIMIT = 125;
 
     private final List<Point> gridLocations = createGridLocations();
 
@@ -65,8 +69,10 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
         }
 
         snakeInstance.setCurrentMovementFrame(snakeInstance.getCurrentMovementFrame() + 1);
+        snakeInstance.setFramesSinceLastFood(snakeInstance.getFramesSinceLastFood() + 1);
 
         handleMovement(snakeInstance);
+        handleBonusFood(snakeInstance);
     }
 
     @Override
@@ -91,7 +97,11 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
         final Point foodLocation = foodPossibleLocations.get(foodIndex);
 
-        snakeInstance.setFoodLocation(foodLocation);
+        final Type foodType = random.nextInt(BONUS_FOOD_RANDOM) == 0 ? Type.BONUS : Type.NORMAL;
+
+        snakeInstance.setFood(Food.Builder.instance().setLocation(foodLocation).setType(foodType).build());
+
+        snakeInstance.setFramesSinceLastFood(0);
     }
 
     private static List<Point> createGridLocations() {
@@ -117,6 +127,15 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
         resetCurrentMovementFrame(snakeInstance);
     }
 
+    private void handleBonusFood(final SnakeInstance snakeInstance) {
+        final Food food = snakeInstance.getFood();
+        final Type foodType = food.getType();
+
+        if (Type.BONUS.equals(foodType) && snakeInstance.getFramesSinceLastFood() == BONUS_FOOD_FRAME_LIMIT) {
+            getNextFood(snakeInstance);
+        }
+    }
+
     private void handleDirection(final SnakeInstance snakeInstance) {
         final Optional<Direction> newSnakeDirection = snakeInstance.getNewSnakeDirection();
 
@@ -138,9 +157,12 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
         snakeInstance.setSnakeParts(newSnakeParts);
 
-        if (snakeInstance.getFoodLocation().equals(newLocation)) {
+        final Food food = snakeInstance.getFood();
+        final Type foodType = food.getType();
+
+        if (food.getLocation().equals(newLocation)) {
             newSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
-            snakeInstance.setScore(snakeInstance.getScore() + POINTS_PER_FOOD);
+            snakeInstance.setScore(snakeInstance.getScore() + foodType.getPoints());
             snakeInstance.getSnakeEvents().add(SnakeEvent.FOOD_EATEN);
             getNextFood(snakeInstance);
         }

@@ -10,6 +10,7 @@ package spypunk.snake.ui.cache;
 
 import java.awt.Image;
 
+import spypunk.snake.model.Food.Type;
 import spypunk.snake.ui.icon.Icon;
 import spypunk.snake.ui.snakepart.SnakePart;
 
@@ -19,5 +20,5 @@ public interface ImageCache {
 
     Image getSnakeImage(SnakePart snakePart);
 
-    Image getFoodImage();
+    Image getFoodImage(Type foodType);
 }

@@ -32,7 +32,9 @@ public class SnakeInstance {
 
     private Optional<Direction> newSnakeDirection = Optional.empty();
 
-    private Point foodLocation;
+    private Food food;
+
+    private int framesSinceLastFood;
 
     public enum State {
         RUNNING {
@@ -139,14 +141,6 @@ public class SnakeInstance {
         this.snakeParts = snakeParts;
     }
 
-    public Point getFoodLocation() {
-        return foodLocation;
-    }
-
-    public void setFoodLocation(final Point foodLocation) {
-        this.foodLocation = foodLocation;
-    }
-
     public Direction getSnakeDirection() {
         return snakeDirection;
     }
@@ -161,5 +155,21 @@ public class SnakeInstance {
 
     public void setNewSnakeDirection(final Optional<Direction> newSnakeDirection) {
         this.newSnakeDirection = newSnakeDirection;
+    }
+
+    public int getFramesSinceLastFood() {
+        return framesSinceLastFood;
+    }
+
+    public void setFramesSinceLastFood(final int framesSinceLastFood) {
+        this.framesSinceLastFood = framesSinceLastFood;
+    }
+
+    public Food getFood() {
+        return food;
+    }
+
+    public void setFood(final Food food) {
+        this.food = food;
     }
 }
