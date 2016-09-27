@@ -10,9 +10,12 @@ package spypunk.snake.model;
 
 import java.awt.Point;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
+
+import spypunk.snake.model.Food.Type;
 
 public class SnakeInstance {
 
@@ -35,6 +38,8 @@ public class SnakeInstance {
     private Food food;
 
     private int framesSinceLastFood;
+
+    private Map<Type, Integer> statistics;
 
     public enum State {
         RUNNING {
@@ -84,6 +89,11 @@ public class SnakeInstance {
 
         public Builder setSnakeDirection(final Direction direction) {
             snakeInstance.setSnakeDirection(direction);
+            return this;
+        }
+
+        public Builder setStatistics(final Map<Type, Integer> statistics) {
+            snakeInstance.setStatistics(statistics);
             return this;
         }
 
@@ -171,5 +181,13 @@ public class SnakeInstance {
 
     public void setFood(final Food food) {
         this.food = food;
+    }
+
+    public Map<Type, Integer> getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(final Map<Type, Integer> statistics) {
+        this.statistics = statistics;
     }
 }

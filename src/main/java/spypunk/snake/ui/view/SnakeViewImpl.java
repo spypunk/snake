@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import spypunk.snake.model.Food.Type;
 import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.controller.SnakeController;
@@ -43,6 +44,10 @@ public class SnakeViewImpl implements SnakeView {
     private final SnakeInstanceGridView snakeInstanceGridView;
 
     private final SnakeInstanceScoreView snakeInstanceScoreView;
+
+    private final SnakeInstanceStatisticView snakeInstanceNormalStatisticView;
+
+    private final SnakeInstanceStatisticView snakeInstanceBonusStatisticView;
 
     private final JLabel muteLabel;
 
@@ -115,6 +120,8 @@ public class SnakeViewImpl implements SnakeView {
             final Snake snake) {
         snakeInstanceGridView = new SnakeInstanceGridView(fontCache, imageCache, snake);
         snakeInstanceScoreView = new SnakeInstanceScoreView(fontCache, snake);
+        snakeInstanceNormalStatisticView = new SnakeInstanceStatisticView(fontCache, imageCache, snake, Type.NORMAL);
+        snakeInstanceBonusStatisticView = new SnakeInstanceStatisticView(fontCache, imageCache, snake, Type.BONUS);
 
         muteImageIcon = new ImageIcon(imageCache.getIcon(Icon.MUTE));
         unmuteImageIcon = new ImageIcon(imageCache.getIcon(Icon.UNMUTE));
@@ -131,18 +138,24 @@ public class SnakeViewImpl implements SnakeView {
 
         final JPanel bottomPanel = new JPanel(new BorderLayout());
 
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE, 3, 3, 3));
         bottomPanel.setBackground(Color.BLACK);
 
+        final JPanel scorePanel = new JPanel(new BorderLayout());
+
+        scorePanel.add(snakeInstanceScoreView, BorderLayout.CENTER);
+        scorePanel.add(snakeInstanceNormalStatisticView, BorderLayout.WEST);
+        scorePanel.add(snakeInstanceBonusStatisticView, BorderLayout.EAST);
+        scorePanel.setBackground(Color.BLACK);
+        scorePanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
+
         bottomPanel.add(muteLabel, BorderLayout.WEST);
-        bottomPanel.add(snakeInstanceScoreView, BorderLayout.NORTH);
         bottomPanel.add(urlLabel, BorderLayout.EAST);
 
         final JPanel centerPanel = new JPanel(new BorderLayout(CELL_SIZE, 0));
 
         centerPanel.setBackground(Color.BLACK);
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE, CELL_SIZE, 10, CELL_SIZE));
-
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(0, CELL_SIZE, 0, CELL_SIZE));
         centerPanel.add(snakeInstanceGridView, BorderLayout.CENTER);
 
         frame = new JFrame(snake.getName() + " " + snake.getVersion());
@@ -154,6 +167,7 @@ public class SnakeViewImpl implements SnakeView {
         frame.addKeyListener(new SnakeViewKeyAdapter(snakeController));
         frame.setIconImage(imageCache.getIcon(Icon.ICON));
 
+        frame.add(scorePanel, BorderLayout.NORTH);
         frame.add(centerPanel, BorderLayout.CENTER);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.pack();
@@ -183,5 +197,7 @@ public class SnakeViewImpl implements SnakeView {
     private void doUpdate() {
         snakeInstanceGridView.update();
         snakeInstanceScoreView.update();
+        snakeInstanceNormalStatisticView.update();
+        snakeInstanceBonusStatisticView.update();
     }
 }

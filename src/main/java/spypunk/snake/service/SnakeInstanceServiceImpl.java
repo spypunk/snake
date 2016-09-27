@@ -11,6 +11,7 @@ package spypunk.snake.service;
 import java.awt.Point;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -50,9 +51,13 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
         snakeParts.add(new Point(x, 1));
         snakeParts.add(new Point(x, 0));
 
+        final Map<Type, Integer> statistics = Lists.newArrayList(Type.values()).stream()
+                .collect(Collectors.toMap(foodType -> foodType, foodType -> 0));
+
         final SnakeInstance snakeInstance = SnakeInstance.Builder.instance()
                 .setSpeed(SnakeConstants.DEFAULT_SPEED).setState(State.RUNNING).setSnakeDirection(Direction.DOWN)
                 .setSnakeParts(snakeParts)
+                .setStatistics(statistics)
                 .build();
 
         getNextFood(snakeInstance);
@@ -162,10 +167,21 @@ public class SnakeInstanceServiceImpl implements SnakeInstanceService {
 
         if (food.getLocation().equals(newLocation)) {
             newSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
-            snakeInstance.setScore(snakeInstance.getScore() + foodType.getPoints());
+            updateScore(snakeInstance, foodType);
+            updateStatistics(snakeInstance, foodType);
             snakeInstance.getSnakeEvents().add(SnakeEvent.FOOD_EATEN);
             getNextFood(snakeInstance);
         }
+    }
+
+    private void updateStatistics(final SnakeInstance snakeInstance, final Type foodType) {
+        final Map<Type, Integer> statistics = snakeInstance.getStatistics();
+        final Integer foodTypeCount = statistics.get(foodType);
+        statistics.put(foodType, foodTypeCount + 1);
+    }
+
+    private void updateScore(final SnakeInstance snakeInstance, final Type foodType) {
+        snakeInstance.setScore(snakeInstance.getScore() + foodType.getPoints());
     }
 
     private Point getSnakeHeadPartNextLocation(final SnakeInstance snakeInstance) {

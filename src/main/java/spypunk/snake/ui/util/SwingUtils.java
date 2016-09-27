@@ -126,6 +126,15 @@ public final class SwingUtils {
         graphics.drawString(text, textRectangle.x, textRectangle.y);
     }
 
+    public static void renderText(final Graphics2D graphics, final String text, final Rectangle rectangle,
+            final Font font,
+            final Color fontColor) {
+        graphics.setFont(font);
+        graphics.setColor(fontColor);
+
+        graphics.drawString(text, rectangle.x, rectangle.y);
+    }
+
     public static void doInGraphics(final BufferedImage image, final Consumer<Graphics2D> consumer) {
         final Graphics2D graphics = image.createGraphics();
 
