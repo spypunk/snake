@@ -110,13 +110,8 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         final List<Point> snakeParts = snakeInstance.getSnakeParts();
 
         for (int i = 0; i < snakeParts.size(); ++i) {
-            final Point snakePartLocation = snakeParts.get(i);
-            final Direction snakeDirection = snakeInstance.getSnakeDirection();
-            final Point nextSnakePartLocation = i < snakeParts.size() - 1 ? snakeParts.get(i + 1) : null;
-            final SnakePart snakePart = getSnakePart(snakeParts, i, snakePartLocation, snakeDirection,
-                nextSnakePartLocation);
-
-            renderSnakePart(graphics, snakePartLocation, snakePart);
+            final SnakePart snakePart = getSnakePart(snakeInstance, i);
+            renderSnakePart(graphics, snakeParts.get(i), snakePart);
         }
 
         renderFood(graphics, snakeInstance);
@@ -128,18 +123,22 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         }
     }
 
-    private SnakePart getSnakePart(final List<Point> snakeParts, final int i, final Point snakePartLocation,
-            final Direction snakeDirection,
-            final Point nextSnakePartLocation) {
+    private SnakePart getSnakePart(final SnakeInstance snakeInstance, final int i) {
+        final Direction snakeDirection = snakeInstance.getSnakeDirection();
+
         if (i == 0) {
             return getSnakeHeadPart(snakeDirection);
         }
 
-        final Point previousSnakePartLocation = snakeParts.get(i - 1);
+        final List<Point> snakeParts = snakeInstance.getSnakeParts();
+        final Point nextSnakePartLocation = i < snakeParts.size() - 1 ? snakeParts.get(i + 1) : null;
 
         if (nextSnakePartLocation == null) {
             return SnakePart.TAIL;
         }
+
+        final Point snakePartLocation = snakeParts.get(i);
+        final Point previousSnakePartLocation = snakeParts.get(i - 1);
 
         if (previousSnakePartLocation.x == nextSnakePartLocation.x) {
             return SnakePart.VERTICAL;
@@ -199,9 +198,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
     private void renderFood(final Graphics2D graphics, final SnakeInstance snakeInstance) {
         final Food food = snakeInstance.getFood();
-
         final Image foodImage = imageCache.getFoodImage(food.getType());
-
         final Rectangle rectangle = getRectangle(food.getLocation());
 
         SwingUtils.drawImage(graphics, foodImage, rectangle);
@@ -209,7 +206,6 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
     private void renderSnakePart(final Graphics2D graphics, final Point location, final SnakePart snakePart) {
         final Image snakeImage = imageCache.getSnakeImage(snakePart);
-
         final Rectangle rectangle = getRectangle(location);
 
         SwingUtils.drawImage(graphics, snakeImage, rectangle);
