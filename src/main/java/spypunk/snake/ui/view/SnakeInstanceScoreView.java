@@ -14,7 +14,6 @@ import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
@@ -28,11 +27,13 @@ import spypunk.snake.ui.util.SwingUtils;
 
 public class SnakeInstanceScoreView extends AbstractSnakeInstanceView {
 
+    private static final String EMPTY_STRING = "".intern();
+
     private static final long serialVersionUID = 3093168306699870331L;
 
     private final Rectangle scoreRectangle = new Rectangle(0, 0, 10 * CELL_SIZE, CELL_SIZE);
 
-    private final Font defaultFont;
+    private final Font scoreFont;
 
     private final Snake snake;
 
@@ -40,7 +41,7 @@ public class SnakeInstanceScoreView extends AbstractSnakeInstanceView {
             final Snake snake) {
         this.snake = snake;
 
-        defaultFont = fontCache.getFont(FontType.DEFAULT);
+        scoreFont = fontCache.getFont(FontType.SCORE);
 
         image = new BufferedImage(scoreRectangle.width, scoreRectangle.height,
                 BufferedImage.TYPE_INT_ARGB);
@@ -59,10 +60,8 @@ public class SnakeInstanceScoreView extends AbstractSnakeInstanceView {
     private void renderScore(final Graphics2D graphics) {
         final SnakeInstance snakeInstance = snake.getSnakeInstance();
 
-        final String score = snakeInstance == null ? "0" : String.valueOf(snakeInstance.getScore());
+        final String score = snakeInstance == null ? EMPTY_STRING : String.valueOf(snakeInstance.getScore());
 
-        final Rectangle2D textBounds = SwingUtils.getTextBounds(graphics, score, defaultFont);
-
-        SwingUtils.renderText(graphics, score, textBounds.getBounds(), defaultFont, DEFAULT_FONT_COLOR);
+        SwingUtils.renderCenteredText(graphics, score, scoreRectangle, scoreFont, DEFAULT_FONT_COLOR);
     }
 }

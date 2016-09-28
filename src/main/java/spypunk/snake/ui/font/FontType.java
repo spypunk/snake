@@ -11,6 +11,7 @@ package spypunk.snake.ui.font;
 public enum FontType {
 
     DEFAULT(30F, Font.NEUTRONIUM),
+    SCORE(40F, Font.NEUTRONIUM),
     URL(10F, Font.RUSSO_ONE),
     FROZEN(42F, Font.NEUTRONIUM);
 

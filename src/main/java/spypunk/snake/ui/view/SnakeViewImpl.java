@@ -141,13 +141,18 @@ public class SnakeViewImpl implements SnakeView {
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE, 3, 3, 3));
         bottomPanel.setBackground(Color.BLACK);
 
-        final JPanel scorePanel = new JPanel(new BorderLayout());
+        final JPanel topPanel = new JPanel(new BorderLayout());
 
-        scorePanel.add(snakeInstanceScoreView, BorderLayout.CENTER);
-        scorePanel.add(snakeInstanceNormalStatisticView, BorderLayout.WEST);
-        scorePanel.add(snakeInstanceBonusStatisticView, BorderLayout.EAST);
-        scorePanel.setBackground(Color.BLACK);
-        scorePanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
+        final JPanel statisticsPanel = new JPanel(new BorderLayout(0, 3));
+
+        statisticsPanel.add(snakeInstanceNormalStatisticView, BorderLayout.NORTH);
+        statisticsPanel.add(snakeInstanceBonusStatisticView, BorderLayout.SOUTH);
+        statisticsPanel.setBackground(Color.BLACK);
+
+        topPanel.add(statisticsPanel, BorderLayout.WEST);
+        topPanel.add(snakeInstanceScoreView, BorderLayout.CENTER);
+        topPanel.setBackground(Color.BLACK);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
 
         bottomPanel.add(muteLabel, BorderLayout.WEST);
         bottomPanel.add(urlLabel, BorderLayout.EAST);
@@ -167,7 +172,7 @@ public class SnakeViewImpl implements SnakeView {
         frame.addKeyListener(new SnakeViewKeyAdapter(snakeController));
         frame.setIconImage(imageCache.getIcon(Icon.ICON));
 
-        frame.add(scorePanel, BorderLayout.NORTH);
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.add(centerPanel, BorderLayout.CENTER);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.pack();
