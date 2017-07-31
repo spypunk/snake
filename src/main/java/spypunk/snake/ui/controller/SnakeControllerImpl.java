@@ -16,7 +16,6 @@ import javax.inject.Singleton;
 
 import org.apache.commons.collections4.CollectionUtils;
 
-import spypunk.snake.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.factory.SnakeFactory;
 import spypunk.snake.model.Snake;
 import spypunk.snake.model.SnakeEvent;
@@ -24,6 +23,7 @@ import spypunk.snake.model.SnakeInstance;
 import spypunk.snake.service.SnakeInstanceService;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
 import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandler;
+import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
 import spypunk.snake.ui.factory.SnakeViewFactory;
 import spypunk.snake.ui.util.SwingUtils;

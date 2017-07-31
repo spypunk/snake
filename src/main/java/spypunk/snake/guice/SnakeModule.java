@@ -10,8 +10,6 @@ package spypunk.snake.guice;
 
 import com.google.inject.AbstractModule;
 
-import spypunk.snake.controller.gameloop.SnakeControllerGameLoop;
-import spypunk.snake.controller.gameloop.SnakeControllerGameLoopImpl;
 import spypunk.snake.factory.SnakeFactory;
 import spypunk.snake.factory.SnakeFactoryImpl;
 import spypunk.snake.service.SnakeInstanceService;
@@ -26,6 +24,8 @@ import spypunk.snake.ui.controller.SnakeController;
 import spypunk.snake.ui.controller.SnakeControllerImpl;
 import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandler;
 import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandlerImpl;
+import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
+import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoopImpl;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandlerImpl;
 import spypunk.snake.ui.factory.SnakeControllerCommandFactory;

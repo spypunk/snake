@@ -6,7 +6,7 @@
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package spypunk.snake.controller.gameloop;
+package spypunk.snake.ui.controller.gameloop;
 
 public interface SnakeControllerGameLoop {
 

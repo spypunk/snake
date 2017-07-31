@@ -6,7 +6,7 @@
  * as published by Sam Hocevar. See the COPYING file for more details.
  */
 
-package spypunk.snake.controller.gameloop;
+package spypunk.snake.ui.controller.gameloop;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,10 +14,15 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import spypunk.snake.ui.controller.SnakeController;
 
 @Singleton
 public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoop, Runnable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SnakeControllerGameLoopImpl.class);
 
     private static final int TICKS_PER_SECOND = 60;
 
@@ -49,19 +54,25 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
 
     @Override
     public void run() {
-        long lastTick = System.currentTimeMillis();
-
         while (running) {
-            long newTick = System.currentTimeMillis();
-
-            for (; newTick - lastTick < SKIP_TICKS; newTick = System
-                    .currentTimeMillis()) {
-                // Do nothing here
-            }
-
-            lastTick = newTick;
+            long currentTick = System.currentTimeMillis();
 
             snakeController.onGameLoopUpdate();
+
+            for (final long nextTick = currentTick + SKIP_TICKS; currentTick < nextTick; currentTick = System
+                    .currentTimeMillis()) {
+                waitMore();
+            }
+        }
+    }
+
+    private void waitMore() {
+        try {
+            Thread.sleep(1);
+        } catch (final InterruptedException e) {
+            LOGGER.error(e.getMessage(), e);
+            Thread.currentThread().interrupt();
+            stop();
         }
     }
 }
