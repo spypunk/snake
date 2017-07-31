@@ -36,7 +36,8 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
 
     @Inject
     public SnakeControllerGameLoopImpl(final SnakeController snakeController) {
-        executorService = Executors.newSingleThreadExecutor();
+        executorService = Executors
+                .newSingleThreadExecutor(runnable -> new Thread(runnable, "SnakeControllerGameLoop"));
         this.snakeController = snakeController;
     }
 
