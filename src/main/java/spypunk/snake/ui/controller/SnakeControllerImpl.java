@@ -52,7 +52,10 @@ public class SnakeControllerImpl implements SnakeController {
     @Override
     public void start() {
         snakeView.show();
+    }
 
+    @Override
+    public void onWindowOpened() {
         snakeControllerGameLoop.start();
     }
 

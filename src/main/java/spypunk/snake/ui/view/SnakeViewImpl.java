@@ -70,6 +70,11 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
         public void windowClosed(final WindowEvent e) {
             snakeController.onWindowClosed();
         }
+
+        @Override
+        public void windowOpened(final WindowEvent e) {
+            snakeController.onWindowOpened();
+        }
     }
 
     private static final class SnakeViewKeyAdapter extends KeyAdapter {
@@ -191,6 +196,8 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
 
     @Override
     public void show() {
+        update();
+
         SwingUtils.doInAWTThread(() -> frame.setVisible(true));
     }
 
