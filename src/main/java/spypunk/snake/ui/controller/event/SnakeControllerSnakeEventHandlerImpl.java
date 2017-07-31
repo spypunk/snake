@@ -45,11 +45,11 @@ public class SnakeControllerSnakeEventHandlerImpl implements SnakeControllerSnak
 
     @Override
     public void handleEvents() {
-        final List<SnakeEvent> tetrisEvents = snake.getSnakeEvents();
+        final List<SnakeEvent> snakeEvents = snake.getSnakeEvents();
 
-        tetrisEvents.stream().map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
+        snakeEvents.stream().map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
 
-        tetrisEvents.clear();
+        snakeEvents.clear();
     }
 
 }
