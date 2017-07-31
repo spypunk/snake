@@ -8,12 +8,27 @@
 
 package spypunk.snake.guice;
 
-import com.google.inject.AbstractModule;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.net.URI;
+import java.util.Properties;
 
-import spypunk.snake.factory.SnakeFactory;
-import spypunk.snake.factory.SnakeFactoryImpl;
-import spypunk.snake.service.SnakeInstanceService;
-import spypunk.snake.service.SnakeInstanceServiceImpl;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.BindingAnnotation;
+import com.google.inject.Provides;
+
+import spypunk.snake.Main;
+import spypunk.snake.exception.SnakeException;
+import spypunk.snake.model.Snake;
+import spypunk.snake.service.SnakeService;
+import spypunk.snake.service.SnakeServiceImpl;
 import spypunk.snake.sound.cache.SoundClipCache;
 import spypunk.snake.sound.cache.SoundClipCacheImpl;
 import spypunk.snake.sound.service.SoundService;
@@ -30,20 +45,51 @@ import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandlerImpl;
 import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
 import spypunk.snake.ui.factory.SnakeControllerCommandFactoryImpl;
-import spypunk.snake.ui.factory.SnakeViewFactory;
-import spypunk.snake.ui.factory.SnakeViewFactoryImpl;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.font.cache.FontCacheImpl;
+import spypunk.snake.ui.view.SnakeView;
+import spypunk.snake.ui.view.SnakeViewImpl;
 
 public class SnakeModule extends AbstractModule {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
+    private static final String NAME_KEY = "name";
+
+    private static final String VERSION_KEY = "version";
+
+    private static final String URL_KEY = "url";
+
+    private static final String SNAKE_PROPERTIES = "/snake.properties";
+
+    private final Snake snake;
+
+    public SnakeModule() {
+        String name;
+        String version;
+        URI uri;
+
+        try (InputStream inputStream = SnakeModule.class.getResource(SNAKE_PROPERTIES).openStream()) {
+            final Properties properties = new Properties();
+
+            properties.load(inputStream);
+
+            name = properties.getProperty(NAME_KEY);
+            version = properties.getProperty(VERSION_KEY);
+            uri = URI.create(properties.getProperty(URL_KEY));
+        } catch (final IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new SnakeException(e);
+        }
+
+        snake = new Snake(name, version, uri);
+    }
+
     @Override
     protected void configure() {
-        bind(SnakeInstanceService.class).to(SnakeInstanceServiceImpl.class);
+        bind(SnakeService.class).to(SnakeServiceImpl.class);
         bind(SnakeController.class).to(SnakeControllerImpl.class);
-        bind(SnakeViewFactory.class).to(SnakeViewFactoryImpl.class);
         bind(ImageCache.class).to(ImageCacheImpl.class);
-        bind(SnakeFactory.class).to(SnakeFactoryImpl.class);
         bind(FontCache.class).to(FontCacheImpl.class);
         bind(SnakeControllerCommandFactory.class).to(SnakeControllerCommandFactoryImpl.class);
         bind(SoundService.class).to(SoundServiceImpl.class);
@@ -51,5 +97,18 @@ public class SnakeModule extends AbstractModule {
         bind(SnakeControllerInputHandler.class).to(SnakeControllerInputHandlerImpl.class);
         bind(SnakeControllerSnakeEventHandler.class).to(SnakeControllerSnakeEventHandlerImpl.class);
         bind(SnakeControllerGameLoop.class).to(SnakeControllerGameLoopImpl.class);
+        bind(SnakeView.class).to(SnakeViewImpl.class);
+    }
+
+    @Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD })
+    @BindingAnnotation
+    public @interface SnakeProvider {
+    }
+
+    @Provides
+    @SnakeProvider
+    @Inject
+    public Snake getSnake() {
+        return snake;
     }
 }

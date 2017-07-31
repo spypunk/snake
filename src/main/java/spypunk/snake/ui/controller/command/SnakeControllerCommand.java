@@ -8,10 +8,8 @@
 
 package spypunk.snake.ui.controller.command;
 
-import spypunk.snake.model.Snake;
-
 @FunctionalInterface
 public interface SnakeControllerCommand {
 
-    void execute(Snake snake);
+    void execute();
 }

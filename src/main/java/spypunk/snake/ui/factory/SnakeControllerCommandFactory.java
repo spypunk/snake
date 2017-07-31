@@ -13,19 +13,19 @@ import spypunk.snake.ui.controller.command.SnakeControllerCommand;
 
 public interface SnakeControllerCommandFactory {
 
-    SnakeControllerCommand createNewGameSnakeControllerCommand();
+    SnakeControllerCommand createNewGameCommand();
 
-    SnakeControllerCommand createPauseSnakeControllerCommand();
+    SnakeControllerCommand createPauseCommand();
 
-    SnakeControllerCommand createDirectionSnakeControllerCommand(Direction direction);
+    SnakeControllerCommand createDirectionCommand(Direction direction);
 
-    SnakeControllerCommand createMuteSnakeControllerCommand();
+    SnakeControllerCommand createMuteCommand();
 
-    SnakeControllerCommand createIncreaseVolumeSnakeControllerCommand();
+    SnakeControllerCommand createIncreaseVolumeCommand();
 
-    SnakeControllerCommand createDecreaseVolumeSnakeControllerCommand();
+    SnakeControllerCommand createDecreaseVolumeCommand();
 
-    SnakeControllerCommand createGameOverSnakeControllerCommand();
+    SnakeControllerCommand createGameOverCommand();
 
-    SnakeControllerCommand createFoodEatenSnakeControllerCommand();
+    SnakeControllerCommand createFoodEatenCommand();
 }

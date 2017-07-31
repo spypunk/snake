@@ -8,8 +8,6 @@
 
 package spypunk.snake.ui.controller;
 
-import spypunk.snake.ui.view.SnakeView;
-
 public interface SnakeController {
 
     void start();
@@ -21,8 +19,6 @@ public interface SnakeController {
     void onKeyPressed(int keyCode);
 
     void onKeyReleased(int keyCode);
-
-    SnakeView getSnakeView();
 
     void onGameLoopUpdate();
 }

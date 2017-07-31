@@ -29,12 +29,25 @@ public class SoundServiceImpl implements SoundService {
 
     @Override
     public void playMusic(final Sound sound) {
-        doPlayMusic(sound);
+        stopMusic();
+
+        currentMusicSoundClip = soundClipCache.getSoundClip(sound);
+
+        currentMusicSoundClip.play();
     }
 
     @Override
     public void pauseMusic() {
-        doPauseMusic();
+        if (currentMusicSoundClip != null) {
+            currentMusicSoundClip.pause();
+        }
+    }
+
+    @Override
+    public void resumeMusic() {
+        if (currentMusicSoundClip != null) {
+            currentMusicSoundClip.play();
+        }
     }
 
     @Override
@@ -47,12 +60,15 @@ public class SoundServiceImpl implements SoundService {
 
     @Override
     public void playSound(final Sound sound) {
-        doPlaySound(sound);
+        final SoundClip clip = soundClipCache.getSoundClip(sound);
+
+        clip.stop();
+        clip.play();
     }
 
     @Override
-    public void mute() {
-        soundClipCache.getAllSoundClips().forEach(SoundClip::mute);
+    public void setMuted(final boolean muted) {
+        soundClipCache.getAllSoundClips().forEach(soundClip -> soundClip.setMuted(muted));
     }
 
     @Override
@@ -63,31 +79,5 @@ public class SoundServiceImpl implements SoundService {
     @Override
     public void decreaseVolume() {
         soundClipCache.getAllSoundClips().forEach(SoundClip::decreaseVolume);
-    }
-
-    @Override
-    public boolean isMute() {
-        return soundClipCache.getAllSoundClips().stream().allMatch(SoundClip::isMute);
-    }
-
-    private void doPlaySound(final Sound sound) {
-        final SoundClip clip = soundClipCache.getSoundClip(sound);
-
-        clip.stop();
-        clip.play();
-    }
-
-    private void doPlayMusic(final Sound sound) {
-        stopMusic();
-
-        currentMusicSoundClip = soundClipCache.getSoundClip(sound);
-
-        currentMusicSoundClip.play();
-    }
-
-    private void doPauseMusic() {
-        if (currentMusicSoundClip != null) {
-            currentMusicSoundClip.pause();
-        }
     }
 }

@@ -11,57 +11,44 @@ package spypunk.snake.ui.view;
 import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
 import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
-import javax.swing.ImageIcon;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.SwingConstants;
 
+import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Snake;
 import spypunk.snake.model.SnakeInstance;
-import spypunk.snake.ui.font.FontType;
+import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
 
+@Singleton
 public class SnakeInstanceScoreView extends AbstractSnakeInstanceView {
 
-    private static final String EMPTY_STRING = "".intern();
-
-    private static final long serialVersionUID = 3093168306699870331L;
+    private static final String EMPTY_STRING = "";
 
     private final Rectangle scoreRectangle = new Rectangle(0, 0, 10 * CELL_SIZE, CELL_SIZE);
 
-    private final Font scoreFont;
-
-    private final Snake snake;
-
+    @Inject
     public SnakeInstanceScoreView(final FontCache fontCache,
-            final Snake snake) {
-        this.snake = snake;
+            final ImageCache imageCache,
+            final @SnakeProvider Snake snake) {
+        super(fontCache, imageCache, snake);
 
-        scoreFont = fontCache.getFont(FontType.SCORE);
+        initializeComponent(scoreRectangle.width, scoreRectangle.height);
 
-        image = new BufferedImage(scoreRectangle.width, scoreRectangle.height,
-                BufferedImage.TYPE_INT_ARGB);
-
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setIcon(new ImageIcon(image));
-        setIgnoreRepaint(true);
+        component.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     @Override
-    public void update() {
-        SwingUtils.doInGraphics(image, this::renderScore);
-        repaint();
-    }
-
-    private void renderScore(final Graphics2D graphics) {
+    protected void doUpdate(final Graphics2D graphics) {
         final SnakeInstance snakeInstance = snake.getSnakeInstance();
 
         final String score = snakeInstance == null ? EMPTY_STRING : String.valueOf(snakeInstance.getScore());
 
-        SwingUtils.renderCenteredText(graphics, score, scoreRectangle, scoreFont, DEFAULT_FONT_COLOR);
+        SwingUtils.renderCenteredText(graphics, score, scoreRectangle, fontCache.getScoreFont(), DEFAULT_FONT_COLOR);
     }
 }

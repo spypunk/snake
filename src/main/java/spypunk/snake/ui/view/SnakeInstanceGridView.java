@@ -13,50 +13,44 @@ import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_BORDER_COLOR;
 import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.google.common.collect.Maps;
 
 import spypunk.snake.constants.SnakeConstants;
+import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Direction;
 import spypunk.snake.model.Food;
 import spypunk.snake.model.Snake;
+import spypunk.snake.model.Snake.State;
 import spypunk.snake.model.SnakeInstance;
-import spypunk.snake.model.SnakeInstance.State;
 import spypunk.snake.ui.cache.ImageCache;
-import spypunk.snake.ui.font.FontType;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.snakepart.SnakePart;
 import spypunk.snake.ui.util.SwingUtils;
 
+@Singleton
 public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
-    private static final long serialVersionUID = -3487901883637598196L;
-
-    private static final String PAUSE = "PAUSE".intern();
+    private static final String PAUSE = "PAUSE";
 
     private static final Color SNAKE_FROZEN_FG_COLOR = new Color(30, 30, 30, 200);
 
-    private static final String GAME_OVER = "GAME OVER".intern();
+    private static final String GAME_OVER = "GAME OVER";
 
-    private static final String PRESS_SPACE = "PRESS SPACE".intern();
+    private static final String PRESS_SPACE = "PRESS SPACE";
 
     private final Rectangle gridRectangle;
 
     private final Rectangle frozenGridRectangle;
-
-    private final ImageCache imageCache;
-
-    private final Font frozenFont;
 
     private final int x;
 
@@ -64,13 +58,11 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
     private final Map<Point, Rectangle> rectanglesCache = Maps.newHashMap();
 
+    @Inject
     public SnakeInstanceGridView(final FontCache fontCache,
             final ImageCache imageCache,
-            final Snake snake) {
-        this.imageCache = imageCache;
-        this.snake = snake;
-
-        frozenFont = fontCache.getFont(FontType.FROZEN);
+            final @SnakeProvider Snake snake) {
+        super(fontCache, imageCache, snake);
 
         gridRectangle = new Rectangle(0, 0, SnakeConstants.WIDTH * CELL_SIZE + 1,
                 SnakeConstants.HEIGHT * CELL_SIZE + 1);
@@ -81,20 +73,11 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         x = gridRectangle.x + 1;
         y = gridRectangle.y + 1;
 
-        image = new BufferedImage(gridRectangle.width + 1, gridRectangle.height + 1,
-                BufferedImage.TYPE_INT_ARGB);
-
-        setIcon(new ImageIcon(image));
-        setIgnoreRepaint(true);
+        initializeComponent(gridRectangle.width + 1, gridRectangle.height + 1);
     }
 
     @Override
-    public void update() {
-        SwingUtils.doInGraphics(image, this::renderSnake);
-        repaint();
-    }
-
-    private void renderSnake(final Graphics2D graphics) {
+    protected void doUpdate(final Graphics2D graphics) {
         final SnakeInstance snakeInstance = snake.getSnakeInstance();
 
         graphics.setColor(DEFAULT_BORDER_COLOR);
@@ -116,7 +99,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
         renderFood(graphics, snakeInstance);
 
-        final State state = snakeInstance.getState();
+        final State state = snake.getState();
 
         if (!State.RUNNING.equals(state)) {
             renderSnakeFrozen(graphics, state);
@@ -124,7 +107,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
     }
 
     private SnakePart getSnakePart(final SnakeInstance snakeInstance, final int i) {
-        final Direction snakeDirection = snakeInstance.getSnakeDirection();
+        final Direction snakeDirection = snakeInstance.getDirection();
 
         if (i == 0) {
             return getSnakeHeadPart(snakeDirection);
@@ -230,7 +213,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
     private void renderSnakeNew(final Graphics2D graphics) {
         SwingUtils.renderCenteredText(graphics, PRESS_SPACE, gridRectangle,
-            frozenFont, DEFAULT_FONT_COLOR);
+            fontCache.getFrozenFont(), DEFAULT_FONT_COLOR);
     }
 
     private void renderSnakeFrozen(final Graphics2D graphics, final State state) {
@@ -239,6 +222,6 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
             frozenGridRectangle.height);
 
         SwingUtils.renderCenteredText(graphics, State.GAME_OVER.equals(state) ? GAME_OVER : PAUSE, gridRectangle,
-            frozenFont, DEFAULT_FONT_COLOR);
+            fontCache.getFrozenFont(), DEFAULT_FONT_COLOR);
     }
 }

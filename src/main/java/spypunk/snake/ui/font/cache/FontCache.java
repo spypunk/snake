@@ -10,10 +10,13 @@ package spypunk.snake.ui.font.cache;
 
 import java.awt.Font;
 
-import spypunk.snake.ui.font.FontType;
-
-@FunctionalInterface
 public interface FontCache {
 
-    Font getFont(FontType fontType);
+    Font getDefaultFont();
+
+    Font getFrozenFont();
+
+    Font getURLFont();
+
+    Font getScoreFont();
 }

@@ -21,6 +21,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -28,16 +30,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Food.Type;
 import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.controller.SnakeController;
-import spypunk.snake.ui.font.FontType;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.icon.Icon;
 import spypunk.snake.ui.util.SwingUtils;
 
-public class SnakeViewImpl implements SnakeView {
+@Singleton
+public class SnakeViewImpl extends AbstractView implements SnakeView {
 
     private final JFrame frame;
 
@@ -114,12 +117,18 @@ public class SnakeViewImpl implements SnakeView {
         }
     }
 
+    @Inject
     public SnakeViewImpl(final SnakeController snakeController,
             final FontCache fontCache,
             final ImageCache imageCache,
-            final Snake snake) {
-        snakeInstanceGridView = new SnakeInstanceGridView(fontCache, imageCache, snake);
-        snakeInstanceScoreView = new SnakeInstanceScoreView(fontCache, snake);
+            final @SnakeProvider Snake snake,
+            final SnakeInstanceGridView snakeInstanceGridView,
+            final SnakeInstanceScoreView snakeInstanceScoreView) {
+        super(fontCache, imageCache, snake);
+
+        this.snakeInstanceGridView = snakeInstanceGridView;
+        this.snakeInstanceScoreView = snakeInstanceScoreView;
+
         snakeInstanceNormalStatisticView = new SnakeInstanceStatisticView(fontCache, imageCache, snake, Type.NORMAL);
         snakeInstanceBonusStatisticView = new SnakeInstanceStatisticView(fontCache, imageCache, snake, Type.BONUS);
 
@@ -132,7 +141,7 @@ public class SnakeViewImpl implements SnakeView {
 
         final JLabel urlLabel = new JLabel(projectURI.getHost() + projectURI.getPath());
 
-        urlLabel.setFont(fontCache.getFont(FontType.URL));
+        urlLabel.setFont(fontCache.getURLFont());
         urlLabel.setForeground(DEFAULT_FONT_COLOR);
         urlLabel.addMouseListener(new URLLabelMouseAdapter(snakeController, urlLabel));
 
@@ -145,12 +154,12 @@ public class SnakeViewImpl implements SnakeView {
 
         final JPanel statisticsPanel = new JPanel(new BorderLayout(0, 3));
 
-        statisticsPanel.add(snakeInstanceNormalStatisticView, BorderLayout.NORTH);
-        statisticsPanel.add(snakeInstanceBonusStatisticView, BorderLayout.SOUTH);
+        statisticsPanel.add(snakeInstanceNormalStatisticView.getComponent(), BorderLayout.NORTH);
+        statisticsPanel.add(snakeInstanceBonusStatisticView.getComponent(), BorderLayout.SOUTH);
         statisticsPanel.setBackground(Color.BLACK);
 
         topPanel.add(statisticsPanel, BorderLayout.WEST);
-        topPanel.add(snakeInstanceScoreView, BorderLayout.CENTER);
+        topPanel.add(snakeInstanceScoreView.getComponent(), BorderLayout.CENTER);
         topPanel.setBackground(Color.BLACK);
         topPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
 
@@ -161,7 +170,7 @@ public class SnakeViewImpl implements SnakeView {
 
         centerPanel.setBackground(Color.BLACK);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, CELL_SIZE, 0, CELL_SIZE));
-        centerPanel.add(snakeInstanceGridView, BorderLayout.CENTER);
+        centerPanel.add(snakeInstanceGridView.getComponent(), BorderLayout.CENTER);
 
         frame = new JFrame(snake.getName() + " " + snake.getVersion());
 
@@ -182,27 +191,19 @@ public class SnakeViewImpl implements SnakeView {
 
     @Override
     public void show() {
-        SwingUtils.doInAWTThread(() -> frame.setVisible(true), true);
+        SwingUtils.doInAWTThread(() -> frame.setVisible(true));
     }
 
     @Override
     public void update() {
-        SwingUtils.doInAWTThread(this::doUpdate, true);
-    }
-
-    @Override
-    public void setMute(final boolean mute) {
-        SwingUtils.doInAWTThread(() -> doSetMute(mute), false);
-    }
-
-    private void doSetMute(final boolean mute) {
-        muteLabel.setIcon(mute ? muteImageIcon : unmuteImageIcon);
-    }
-
-    private void doUpdate() {
         snakeInstanceGridView.update();
         snakeInstanceScoreView.update();
         snakeInstanceNormalStatisticView.update();
         snakeInstanceBonusStatisticView.update();
+    }
+
+    @Override
+    public void setMuted(final boolean muted) {
+        SwingUtils.doInAWTThread(() -> muteLabel.setIcon(muted ? muteImageIcon : unmuteImageIcon));
     }
 }

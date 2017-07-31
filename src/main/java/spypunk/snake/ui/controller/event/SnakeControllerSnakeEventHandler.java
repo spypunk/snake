@@ -8,13 +8,8 @@
 
 package spypunk.snake.ui.controller.event;
 
-import java.util.List;
-
-import spypunk.snake.model.SnakeEvent;
-import spypunk.snake.ui.controller.command.SnakeControllerCommand;
-
 @FunctionalInterface
 public interface SnakeControllerSnakeEventHandler {
 
-    List<SnakeControllerCommand> handleEvents(List<SnakeEvent> snakeEvents);
+    void handleEvents();
 }

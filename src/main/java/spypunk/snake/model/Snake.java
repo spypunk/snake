@@ -9,71 +9,63 @@
 package spypunk.snake.model;
 
 import java.net.URI;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class Snake {
 
-    private String name;
+    private final String name;
 
-    private String version;
+    private final String version;
 
-    private URI projectURI;
+    private final URI projectURI;
+
+    private final List<SnakeEvent> snakeEvents = Lists.newArrayList();
 
     private SnakeInstance snakeInstance;
 
-    public static final class Builder {
+    private State state = State.STOPPED;
 
-        private final Snake snake = new Snake();
+    private boolean muted;
 
-        private Builder() {
-        }
+    public enum State {
+        RUNNING {
+            @Override
+            public State onPause() {
+                return PAUSED;
+            }
+        },
+        PAUSED {
+            @Override
+            public State onPause() {
+                return RUNNING;
+            }
+        },
+        GAME_OVER,
+        STOPPED;
 
-        public static Builder instance() {
-            return new Builder();
-        }
-
-        public Builder setName(final String name) {
-            snake.setName(name);
+        public State onPause() {
             return this;
         }
+    }
 
-        public Builder setVersion(final String version) {
-            snake.setVersion(version);
-            return this;
-        }
-
-        public Builder setProjectURI(final URI projectURI) {
-            snake.setProjectURI(projectURI);
-            return this;
-        }
-
-        public Snake build() {
-            return snake;
-        }
-
+    public Snake(final String name, final String version, final URI projectURI) {
+        this.name = name;
+        this.version = version;
+        this.projectURI = projectURI;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public String getVersion() {
         return version;
     }
 
-    public void setVersion(final String version) {
-        this.version = version;
-    }
-
     public URI getProjectURI() {
         return projectURI;
-    }
-
-    public void setProjectURI(final URI projectURI) {
-        this.projectURI = projectURI;
     }
 
     public SnakeInstance getSnakeInstance() {
@@ -82,5 +74,25 @@ public class Snake {
 
     public void setSnakeInstance(final SnakeInstance snakeInstance) {
         this.snakeInstance = snakeInstance;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(final State state) {
+        this.state = state;
+    }
+
+    public List<SnakeEvent> getSnakeEvents() {
+        return snakeEvents;
+    }
+
+    public boolean isMuted() {
+        return muted;
+    }
+
+    public void setMuted(final boolean muted) {
+        this.muted = muted;
     }
 }

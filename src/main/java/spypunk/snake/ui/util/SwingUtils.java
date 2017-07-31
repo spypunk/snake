@@ -39,6 +39,10 @@ public final class SwingUtils {
         throw new IllegalAccessError();
     }
 
+    public static void doInAWTThread(final Runnable runnable) {
+        doInAWTThread(runnable, false);
+    }
+
     public static void doInAWTThread(final Runnable runnable, final boolean wait) {
         if (wait) {
             try {
@@ -111,7 +115,9 @@ public final class SwingUtils {
                 LOGGER.warn("Cannot open following URL : " + uri + " | " + e.getMessage(), e);
             }
         } else {
-            LOGGER.warn("Your system does not support URL browsing, cannot open following URL : " + uri);
+            final String message = String
+                    .format("Your system does not support URL browsing, cannot open following URL : %s", uri);
+            LOGGER.warn(message);
         }
     }
 

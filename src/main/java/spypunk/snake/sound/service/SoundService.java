@@ -18,13 +18,13 @@ public interface SoundService {
 
     void pauseMusic();
 
+    void resumeMusic();
+
     void stopMusic();
 
-    void mute();
+    void setMuted(boolean muted);
 
     void increaseVolume();
 
     void decreaseVolume();
-
-    boolean isMute();
 }

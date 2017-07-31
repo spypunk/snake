@@ -31,14 +31,9 @@ public class FontCacheImpl implements FontCache {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FontCacheImpl.class);
 
-    private static final String FONTS_FOLDER = "/font/".intern();
+    private static final String FONTS_FOLDER = "/font/";
 
     private final Map<FontType, Font> fonts = createFonts();
-
-    @Override
-    public Font getFont(final FontType fontType) {
-        return fonts.get(fontType);
-    }
 
     private static Font createFont(final FontType fontType) {
         final String resourceName = String.format("%s%s", FONTS_FOLDER, fontType.getFileName());
@@ -54,5 +49,29 @@ public class FontCacheImpl implements FontCache {
     private static Map<FontType, Font> createFonts() {
         return Lists.newArrayList(FontType.values()).stream()
                 .collect(Collectors.toMap(Function.identity(), FontCacheImpl::createFont));
+    }
+
+    @Override
+    public Font getDefaultFont() {
+        return getFont(FontType.DEFAULT);
+    }
+
+    @Override
+    public Font getFrozenFont() {
+        return getFont(FontType.FROZEN);
+    }
+
+    @Override
+    public Font getURLFont() {
+        return getFont(FontType.URL);
+    }
+
+    @Override
+    public Font getScoreFont() {
+        return getFont(FontType.SCORE);
+    }
+
+    private Font getFont(final FontType fontType) {
+        return fonts.get(fontType);
     }
 }

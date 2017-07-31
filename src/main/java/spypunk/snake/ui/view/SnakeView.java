@@ -12,5 +12,5 @@ public interface SnakeView extends View {
 
     void show();
 
-    void setMute(boolean mute);
+    void setMuted(boolean muted);
 }

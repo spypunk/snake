@@ -8,10 +8,6 @@
 
 package spypunk.snake.ui.controller.input;
 
-import java.util.List;
-
-import spypunk.snake.ui.controller.command.SnakeControllerCommand;
-
 public interface SnakeControllerInputHandler {
 
     enum InputType {
@@ -27,7 +23,5 @@ public interface SnakeControllerInputHandler {
 
     void onKeyReleased(int keyCode);
 
-    List<SnakeControllerCommand> handleInputs();
-
-    void reset();
+    void handleInputs();
 }

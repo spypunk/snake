@@ -14,7 +14,7 @@ public final class SnakeConstants {
 
     public static final int HEIGHT = 25;
 
-    public static final int DEFAULT_SPEED = 3;
+    public static final int DEFAULT_SPEED = 4;
 
     private SnakeConstants() {
         throw new IllegalAccessError();

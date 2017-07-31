@@ -8,31 +8,22 @@
 
 package spypunk.snake.ui.controller;
 
-import java.util.Collection;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.commons.collections4.CollectionUtils;
-
-import spypunk.snake.factory.SnakeFactory;
+import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Snake;
-import spypunk.snake.model.SnakeEvent;
-import spypunk.snake.model.SnakeInstance;
-import spypunk.snake.service.SnakeInstanceService;
-import spypunk.snake.ui.controller.command.SnakeControllerCommand;
+import spypunk.snake.service.SnakeService;
 import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandler;
 import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
-import spypunk.snake.ui.factory.SnakeViewFactory;
 import spypunk.snake.ui.util.SwingUtils;
 import spypunk.snake.ui.view.SnakeView;
 
 @Singleton
 public class SnakeControllerImpl implements SnakeController {
 
-    private final SnakeInstanceService snakeInstanceService;
+    private final SnakeService snakeService;
 
     private final SnakeView snakeView;
 
@@ -45,17 +36,17 @@ public class SnakeControllerImpl implements SnakeController {
     private final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler;
 
     @Inject
-    public SnakeControllerImpl(final SnakeFactory snakeFactory, final SnakeViewFactory snakeViewFactory,
-            final SnakeControllerGameLoop snakeControllerGameLoop, final SnakeInstanceService snakeInstanceService,
+    public SnakeControllerImpl(final SnakeControllerGameLoop snakeControllerGameLoop, final SnakeService snakeService,
             final SnakeControllerInputHandler snakeControllerInputHandler,
-            final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler) {
-        this.snakeInstanceService = snakeInstanceService;
+            final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler,
+            final @SnakeProvider Snake snake,
+            final SnakeView snakeView) {
+        this.snakeService = snakeService;
         this.snakeControllerInputHandler = snakeControllerInputHandler;
         this.snakeControllersnakeEventHandler = snakeControllersnakeEventHandler;
         this.snakeControllerGameLoop = snakeControllerGameLoop;
-
-        snake = snakeFactory.createSnake();
-        snakeView = snakeViewFactory.createsnakeView(snake);
+        this.snake = snake;
+        this.snakeView = snakeView;
     }
 
     @Override
@@ -77,20 +68,11 @@ public class SnakeControllerImpl implements SnakeController {
 
     @Override
     public void onGameLoopUpdate() {
-        executesnakeControllerCommands(snakeControllerInputHandler.handleInputs());
+        snakeControllerInputHandler.handleInputs();
 
-        snakeControllerInputHandler.reset();
+        snakeService.update();
 
-        final SnakeInstance snakeInstance = snake.getSnakeInstance();
-
-        if (snakeInstance != null) {
-            snakeInstanceService.update(snakeInstance);
-
-            final List<SnakeEvent> snakeEvents = snakeInstance.getSnakeEvents();
-
-            executesnakeControllerCommands(
-                snakeControllersnakeEventHandler.handleEvents(snakeEvents));
-        }
+        snakeControllersnakeEventHandler.handleEvents();
 
         snakeView.update();
     }
@@ -103,18 +85,5 @@ public class SnakeControllerImpl implements SnakeController {
     @Override
     public void onKeyReleased(final int keyCode) {
         snakeControllerInputHandler.onKeyReleased(keyCode);
-    }
-
-    @Override
-    public SnakeView getSnakeView() {
-        return snakeView;
-    }
-
-    private void executesnakeControllerCommands(final Collection<SnakeControllerCommand> snakeControllerCommands) {
-        if (CollectionUtils.isEmpty(snakeControllerCommands)) {
-            return;
-        }
-
-        snakeControllerCommands.forEach(snakeControllerCommand -> snakeControllerCommand.execute(snake));
     }
 }

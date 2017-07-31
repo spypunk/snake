@@ -8,19 +8,16 @@
 
 package spypunk.snake.ui.controller.event;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import com.google.common.collect.Maps;
 
+import spypunk.snake.guice.SnakeModule.SnakeProvider;
+import spypunk.snake.model.Snake;
 import spypunk.snake.model.SnakeEvent;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
 import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
@@ -28,25 +25,31 @@ import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
 @Singleton
 public class SnakeControllerSnakeEventHandlerImpl implements SnakeControllerSnakeEventHandler {
 
-    private final Map<SnakeEvent, Supplier<SnakeControllerCommand>> snakeControllerCommands = Maps
+    private final Map<SnakeEvent, SnakeControllerCommand> snakeControllerCommands = Maps
             .newHashMap();
 
+    private final Snake snake;
+
     @Inject
-    public SnakeControllerSnakeEventHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory) {
+    public SnakeControllerSnakeEventHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory,
+            final @SnakeProvider Snake snake) {
+
+        this.snake = snake;
+
         snakeControllerCommands.put(SnakeEvent.GAME_OVER,
-            snakeControllerCommandFactory::createGameOverSnakeControllerCommand);
+            snakeControllerCommandFactory.createGameOverCommand());
 
         snakeControllerCommands.put(SnakeEvent.FOOD_EATEN,
-            snakeControllerCommandFactory::createFoodEatenSnakeControllerCommand);
+            snakeControllerCommandFactory.createFoodEatenCommand());
     }
 
     @Override
-    public List<SnakeControllerCommand> handleEvents(final List<SnakeEvent> snakeEvents) {
-        if (CollectionUtils.isEmpty(snakeEvents)) {
-            return Collections.emptyList();
-        }
+    public void handleEvents() {
+        final List<SnakeEvent> tetrisEvents = snake.getSnakeEvents();
 
-        return snakeEvents.stream().map(snakeControllerCommands::get).map(Supplier::get).collect(Collectors.toList());
+        tetrisEvents.stream().map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
+
+        tetrisEvents.clear();
     }
 
 }

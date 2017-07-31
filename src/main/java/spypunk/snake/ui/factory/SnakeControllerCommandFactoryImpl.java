@@ -11,95 +11,95 @@ package spypunk.snake.ui.factory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Direction;
-import spypunk.snake.model.SnakeInstance;
-import spypunk.snake.model.SnakeInstance.State;
-import spypunk.snake.service.SnakeInstanceService;
+import spypunk.snake.model.Snake;
+import spypunk.snake.model.Snake.State;
+import spypunk.snake.service.SnakeService;
 import spypunk.snake.sound.Sound;
 import spypunk.snake.sound.service.SoundService;
-import spypunk.snake.ui.controller.SnakeController;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
+import spypunk.snake.ui.view.SnakeView;
 
 @Singleton
 public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommandFactory {
 
-    private final SnakeInstanceService snakeInstanceService;
+    private final SnakeService snakeService;
 
     private final SoundService soundService;
 
-    private final SnakeController snakeController;
+    private final Snake snake;
+
+    private final SnakeView snakeView;
 
     @Inject
-    public SnakeControllerCommandFactoryImpl(final SnakeInstanceService snakeInstanceService,
+    public SnakeControllerCommandFactoryImpl(final SnakeService snakeService,
             final SoundService soundService,
-            final SnakeController snakeController) {
-        this.snakeInstanceService = snakeInstanceService;
+            final @SnakeProvider Snake snake,
+            final SnakeView snakeView) {
+        this.snakeService = snakeService;
         this.soundService = soundService;
-        this.snakeController = snakeController;
+        this.snake = snake;
+        this.snakeView = snakeView;
     }
 
     @Override
-    public SnakeControllerCommand createNewGameSnakeControllerCommand() {
-        return snake -> {
-            snakeInstanceService.create(snake);
-
+    public SnakeControllerCommand createNewGameCommand() {
+        return () -> {
+            snakeService.start();
             soundService.playMusic(Sound.BACKGROUND);
         };
     }
 
     @Override
-    public SnakeControllerCommand createPauseSnakeControllerCommand() {
-        return snake -> {
-            final SnakeInstance snakeInstance = snake.getSnakeInstance();
+    public SnakeControllerCommand createPauseCommand() {
+        return () -> {
+            snakeService.pause();
 
-            if (snakeInstance != null) {
-                snakeInstanceService.pause(snakeInstance);
+            final State state = snake.getState();
 
-                final State state = snakeInstance.getState();
-
-                if (State.RUNNING.equals(state) || State.PAUSED.equals(state)) {
-                    soundService.pauseMusic();
-                }
+            if (State.PAUSED.equals(state)) {
+                soundService.pauseMusic();
+            } else if (State.RUNNING.equals(state)) {
+                soundService.resumeMusic();
             }
         };
     }
 
     @Override
-    public SnakeControllerCommand createDirectionSnakeControllerCommand(final Direction direction) {
-        return snake -> {
-            final SnakeInstance snakeInstance = snake.getSnakeInstance();
+    public SnakeControllerCommand createDirectionCommand(final Direction direction) {
+        return () -> snakeService.updateDirection(direction);
+    }
 
-            if (snakeInstance != null) {
-                snakeInstanceService.updateDirection(snake.getSnakeInstance(), direction);
-            }
+    @Override
+    public SnakeControllerCommand createMuteCommand() {
+        return () -> {
+            snakeService.mute();
+
+            final boolean muted = snake.isMuted();
+
+            snakeView.setMuted(muted);
+            soundService.setMuted(muted);
         };
     }
 
     @Override
-    public SnakeControllerCommand createMuteSnakeControllerCommand() {
-        return snake -> {
-            soundService.mute();
-            snakeController.getSnakeView().setMute(soundService.isMute());
-        };
+    public SnakeControllerCommand createIncreaseVolumeCommand() {
+        return soundService::increaseVolume;
     }
 
     @Override
-    public SnakeControllerCommand createIncreaseVolumeSnakeControllerCommand() {
-        return snake -> soundService.increaseVolume();
+    public SnakeControllerCommand createDecreaseVolumeCommand() {
+        return soundService::decreaseVolume;
     }
 
     @Override
-    public SnakeControllerCommand createDecreaseVolumeSnakeControllerCommand() {
-        return snake -> soundService.decreaseVolume();
+    public SnakeControllerCommand createGameOverCommand() {
+        return () -> soundService.playMusic(Sound.GAME_OVER);
     }
 
     @Override
-    public SnakeControllerCommand createGameOverSnakeControllerCommand() {
-        return snake -> soundService.playMusic(Sound.GAME_OVER);
-    }
-
-    @Override
-    public SnakeControllerCommand createFoodEatenSnakeControllerCommand() {
-        return snake -> soundService.playSound(Sound.FOOD_EATEN);
+    public SnakeControllerCommand createFoodEatenCommand() {
+        return () -> soundService.playSound(Sound.FOOD_EATEN);
     }
 }
