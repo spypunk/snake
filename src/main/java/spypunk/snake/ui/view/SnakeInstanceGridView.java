@@ -78,17 +78,19 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
     @Override
     protected void doUpdate(final Graphics2D graphics) {
-        final SnakeInstance snakeInstance = snake.getSnakeInstance();
-
         graphics.setColor(DEFAULT_BORDER_COLOR);
 
         graphics.drawRect(gridRectangle.x, gridRectangle.y, gridRectangle.width,
             gridRectangle.height);
 
-        if (snakeInstance == null) {
-            renderSnakeNew(graphics);
+        final State state = snake.getState();
+
+        if (State.STOPPED.equals(state)) {
+            renderSnakeStopped(graphics);
             return;
         }
+
+        final SnakeInstance snakeInstance = snake.getSnakeInstance();
 
         final List<Point> snakeParts = snakeInstance.getSnakeParts();
 
@@ -99,10 +101,8 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
 
         renderFood(graphics, snakeInstance);
 
-        final State state = snake.getState();
-
         if (!State.RUNNING.equals(state)) {
-            renderSnakeFrozen(graphics, state);
+            renderSnakeNotRunning(graphics, state);
         }
     }
 
@@ -211,12 +211,12 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         return rectangle;
     }
 
-    private void renderSnakeNew(final Graphics2D graphics) {
+    private void renderSnakeStopped(final Graphics2D graphics) {
         SwingUtils.renderCenteredText(graphics, PRESS_SPACE, gridRectangle,
             fontCache.getFrozenFont(), DEFAULT_FONT_COLOR);
     }
 
-    private void renderSnakeFrozen(final Graphics2D graphics, final State state) {
+    private void renderSnakeNotRunning(final Graphics2D graphics, final State state) {
         graphics.setColor(SNAKE_FROZEN_FG_COLOR);
         graphics.fillRect(frozenGridRectangle.x, frozenGridRectangle.y, frozenGridRectangle.width,
             frozenGridRectangle.height);

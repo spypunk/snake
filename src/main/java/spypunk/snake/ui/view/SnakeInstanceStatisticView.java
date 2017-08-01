@@ -16,7 +16,7 @@ import java.awt.Rectangle;
 
 import spypunk.snake.model.Food.Type;
 import spypunk.snake.model.Snake;
-import spypunk.snake.model.SnakeInstance;
+import spypunk.snake.model.Snake.State;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
@@ -42,9 +42,8 @@ public class SnakeInstanceStatisticView extends AbstractSnakeInstanceView {
 
     @Override
     protected void doUpdate(final Graphics2D graphics) {
-        final SnakeInstance snakeInstance = snake.getSnakeInstance();
-
-        final String count = snakeInstance == null ? "0" : String.valueOf(snakeInstance.getStatistics().get(foodType));
+        final String count = State.STOPPED.equals(snake.getState()) ? "0"
+                : String.valueOf(snake.getSnakeInstance().getStatistics().get(foodType));
 
         SwingUtils.renderCenteredText(graphics, count, scoreRectangle, fontCache.getDefaultFont(), DEFAULT_FONT_COLOR);
 

@@ -9,7 +9,7 @@
 package spypunk.snake.model;
 
 import java.awt.Point;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class SnakeInstance {
 
     private final Map<Type, Integer> statistics;
 
-    private final List<Point> snakeParts = Lists.newArrayList();
+    private final LinkedList<Point> snakeParts = Lists.newLinkedList();
 
     private int score;
 
@@ -69,7 +69,7 @@ public class SnakeInstance {
         currentMovementFrame = currentMoveFrame;
     }
 
-    public List<Point> getSnakeParts() {
+    public LinkedList<Point> getSnakeParts() {
         return snakeParts;
     }
 

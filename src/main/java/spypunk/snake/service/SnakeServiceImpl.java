@@ -9,6 +9,7 @@
 package spypunk.snake.service;
 
 import java.awt.Point;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -180,18 +181,14 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void moveSnake(final Point nextLocation) {
-        final List<Point> snakeParts = snakeInstance.getSnakeParts();
-        final List<Point> updatedSnakeParts = Lists.newArrayList();
+        final Deque<Point> snakeParts = snakeInstance.getSnakeParts();
 
-        updatedSnakeParts.add(nextLocation);
-        updatedSnakeParts.addAll(snakeParts.subList(0, snakeParts.size() - 1));
+        snakeParts.addFirst(nextLocation);
 
         final Food food = snakeInstance.getFood();
 
         if (food.getLocation().equals(nextLocation)) {
             final Type foodType = food.getType();
-
-            updatedSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
 
             updateScore(foodType);
             updateStatistics(foodType);
@@ -199,10 +196,9 @@ public class SnakeServiceImpl implements SnakeService {
             snake.getSnakeEvents().add(SnakeEvent.FOOD_EATEN);
 
             popNextFood();
+        } else {
+            snakeParts.removeLast();
         }
-
-        snakeParts.clear();
-        snakeParts.addAll(updatedSnakeParts);
     }
 
     private void updateStatistics(final Type foodType) {
@@ -217,8 +213,8 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private Point getNextLocation() {
-        final List<Point> snakeParts = snakeInstance.getSnakeParts();
-        final Point snakeHeadPart = snakeParts.get(0);
+        final Deque<Point> snakeParts = snakeInstance.getSnakeParts();
+        final Point snakeHeadPart = snakeParts.getFirst();
         final Direction direction = snakeInstance.getDirection();
 
         return direction.apply(snakeHeadPart);
