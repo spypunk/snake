@@ -20,11 +20,11 @@ import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
 
-public abstract class AbstractSnakeInstanceView extends AbstractView {
+public abstract class AbstractSnakeView extends AbstractView {
 
     protected JLabel component;
 
-    protected AbstractSnakeInstanceView(final FontCache fontCache, final ImageCache imageCache, final Snake snake) {
+    protected AbstractSnakeView(final FontCache fontCache, final ImageCache imageCache, final Snake snake) {
         super(fontCache, imageCache, snake);
     }
 

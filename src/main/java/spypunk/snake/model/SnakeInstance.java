@@ -10,6 +10,7 @@ package spypunk.snake.model;
 
 import java.awt.Point;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,12 +18,15 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 
 import spypunk.snake.model.Food.Type;
+import spypunk.snake.model.Snake.State;
 
 public class SnakeInstance {
 
     private final Map<Type, Integer> statistics;
 
     private final LinkedList<Point> snakeParts = Lists.newLinkedList();
+
+    private final List<SnakeEvent> snakeEvents = Lists.newArrayList();
 
     private int score;
 
@@ -39,6 +43,8 @@ public class SnakeInstance {
     private int framesSinceLastFoodPopped;
 
     private boolean foodPopped;
+
+    private State state = State.STOPPED;
 
     public SnakeInstance() {
         statistics = Lists.newArrayList(Type.values()).stream()
@@ -115,5 +121,17 @@ public class SnakeInstance {
 
     public void setFoodPopped(final boolean foodPopped) {
         this.foodPopped = foodPopped;
+    }
+
+    public List<SnakeEvent> getSnakeEvents() {
+        return snakeEvents;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(final State state) {
+        this.state = state;
     }
 }

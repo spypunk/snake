@@ -20,20 +20,17 @@ import javax.swing.SwingConstants;
 
 import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Snake;
-import spypunk.snake.model.Snake.State;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
 
 @Singleton
-public class SnakeInstanceScoreView extends AbstractSnakeInstanceView {
-
-    private static final String EMPTY_STRING = "";
+public class SnakeScoreView extends AbstractSnakeView {
 
     private final Rectangle scoreRectangle = new Rectangle(0, 0, 10 * CELL_SIZE, CELL_SIZE);
 
     @Inject
-    public SnakeInstanceScoreView(final FontCache fontCache,
+    public SnakeScoreView(final FontCache fontCache,
             final ImageCache imageCache,
             final @SnakeProvider Snake snake) {
         super(fontCache, imageCache, snake);
@@ -45,8 +42,7 @@ public class SnakeInstanceScoreView extends AbstractSnakeInstanceView {
 
     @Override
     protected void doUpdate(final Graphics2D graphics) {
-        final String score = State.STOPPED.equals(snake.getState()) ? EMPTY_STRING
-                : String.valueOf(snake.getSnakeInstance().getScore());
+        final String score = String.valueOf(snake.getScore());
 
         SwingUtils.renderCenteredText(graphics, score, scoreRectangle, fontCache.getScoreFont(), DEFAULT_FONT_COLOR);
     }

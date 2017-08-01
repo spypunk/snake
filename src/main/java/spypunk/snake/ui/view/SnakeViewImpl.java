@@ -44,13 +44,13 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
 
     private final JFrame frame;
 
-    private final SnakeInstanceGridView snakeInstanceGridView;
+    private final SnakeGridView snakeInstanceGridView;
 
-    private final SnakeInstanceScoreView snakeInstanceScoreView;
+    private final SnakeScoreView snakeInstanceScoreView;
 
-    private final SnakeInstanceStatisticView snakeInstanceNormalStatisticView;
+    private final SnakeStatisticView snakeInstanceNormalStatisticView;
 
-    private final SnakeInstanceStatisticView snakeInstanceBonusStatisticView;
+    private final SnakeStatisticView snakeInstanceBonusStatisticView;
 
     private final JLabel muteLabel;
 
@@ -127,15 +127,15 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
             final FontCache fontCache,
             final ImageCache imageCache,
             final @SnakeProvider Snake snake,
-            final SnakeInstanceGridView snakeInstanceGridView,
-            final SnakeInstanceScoreView snakeInstanceScoreView) {
+            final SnakeGridView snakeInstanceGridView,
+            final SnakeScoreView snakeInstanceScoreView) {
         super(fontCache, imageCache, snake);
 
         this.snakeInstanceGridView = snakeInstanceGridView;
         this.snakeInstanceScoreView = snakeInstanceScoreView;
 
-        snakeInstanceNormalStatisticView = new SnakeInstanceStatisticView(fontCache, imageCache, snake, Type.NORMAL);
-        snakeInstanceBonusStatisticView = new SnakeInstanceStatisticView(fontCache, imageCache, snake, Type.BONUS);
+        snakeInstanceNormalStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.NORMAL);
+        snakeInstanceBonusStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.BONUS);
 
         muteImageIcon = new ImageIcon(imageCache.getIcon(Icon.MUTE));
         unmuteImageIcon = new ImageIcon(imageCache.getIcon(Icon.UNMUTE));

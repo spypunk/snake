@@ -44,8 +44,6 @@ public class SnakeServiceImpl implements SnakeService {
 
     private final Snake snake;
 
-    private SnakeInstance snakeInstance;
-
     @Inject
     public SnakeServiceImpl(@SnakeProvider final Snake snake) {
         this.snake = snake;
@@ -61,16 +59,13 @@ public class SnakeServiceImpl implements SnakeService {
         snakeParts.add(new Point(x, 1));
         snakeParts.add(new Point(x, 0));
 
-        snakeInstance = new SnakeInstance();
-
-        snakeInstance.setSpeed(SnakeConstants.DEFAULT_SPEED);
-        snakeInstance.setDirection(Direction.DOWN);
-        snakeInstance.getSnakeParts().addAll(snakeParts);
+        snake.setSnakeInstance(new SnakeInstance());
+        snake.setSpeed(SnakeConstants.DEFAULT_SPEED);
+        snake.setDirection(Direction.DOWN);
+        snake.getSnakeParts().addAll(snakeParts);
+        snake.setState(State.RUNNING);
 
         popNextFood();
-
-        snake.setSnakeInstance(snakeInstance);
-        snake.setState(State.RUNNING);
     }
 
     @Override
@@ -92,7 +87,7 @@ public class SnakeServiceImpl implements SnakeService {
     @Override
     public void updateDirection(final Direction direction) {
         if (isSnakeRunning()) {
-            snakeInstance.setNextDirection(direction);
+            snake.setNextDirection(direction);
         }
     }
 
@@ -102,29 +97,29 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void handleFoodPopped() {
-        if (snakeInstance.isFoodPopped()) {
-            snakeInstance.setFoodPopped(false);
+        if (snake.isFoodPopped()) {
+            snake.setFoodPopped(false);
         } else {
             incrementFramesSinceLastFoodPopped();
         }
     }
 
     private void incrementFramesSinceLastFoodPopped() {
-        snakeInstance.setFramesSinceLastFoodPopped(snakeInstance.getFramesSinceLastFoodPopped() + 1);
+        snake.setFramesSinceLastFoodPopped(snake.getFramesSinceLastFoodPopped() + 1);
     }
 
     private void popNextFood() {
         final List<Point> possibleFoodLocations = Lists.newArrayList(gridLocations);
 
-        possibleFoodLocations.removeAll(snakeInstance.getSnakeParts());
+        possibleFoodLocations.removeAll(snake.getSnakeParts());
 
         final int foodIndex = random.nextInt(possibleFoodLocations.size());
         final Point foodLocation = possibleFoodLocations.get(foodIndex);
         final Type foodType = random.nextInt(BONUS_FOOD_RANDOM) == 0 ? Type.BONUS : Type.NORMAL;
 
-        snakeInstance.setFood(new Food(foodLocation, foodType));
-        snakeInstance.setFoodPopped(true);
-        snakeInstance.setFramesSinceLastFoodPopped(0);
+        snake.setFood(new Food(foodLocation, foodType));
+        snake.setFoodPopped(true);
+        snake.setFramesSinceLastFoodPopped(0);
     }
 
     private static List<Point> createGridLocations() {
@@ -157,35 +152,35 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void incrementCurrentMovementFrame() {
-        snakeInstance.setCurrentMovementFrame(snakeInstance.getCurrentMovementFrame() + 1);
+        snake.setCurrentMovementFrame(snake.getCurrentMovementFrame() + 1);
     }
 
     private void handleBonusFood() {
-        final Food food = snakeInstance.getFood();
+        final Food food = snake.getFood();
         final Type foodType = food.getType();
 
-        if (Type.BONUS.equals(foodType) && snakeInstance.getFramesSinceLastFoodPopped() == BONUS_FOOD_FRAME_LIMIT) {
+        if (Type.BONUS.equals(foodType) && snake.getFramesSinceLastFoodPopped() == BONUS_FOOD_FRAME_LIMIT) {
             popNextFood();
         }
     }
 
     private void handleDirection() {
-        final Optional<Direction> nextDirection = snakeInstance.getNextDirection();
+        final Optional<Direction> nextDirection = snake.getNextDirection();
 
         if (!nextDirection.isPresent()) {
             return;
         }
 
-        snakeInstance.setDirection(snakeInstance.getDirection().apply(nextDirection.get()));
-        snakeInstance.setNextDirection(null);
+        snake.setDirection(snake.getDirection().apply(nextDirection.get()));
+        snake.setNextDirection(null);
     }
 
     private void moveSnake(final Point nextLocation) {
-        final Deque<Point> snakeParts = snakeInstance.getSnakeParts();
+        final Deque<Point> snakeParts = snake.getSnakeParts();
 
         snakeParts.addFirst(nextLocation);
 
-        final Food food = snakeInstance.getFood();
+        final Food food = snake.getFood();
 
         if (food.getLocation().equals(nextLocation)) {
             final Type foodType = food.getType();
@@ -202,20 +197,20 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void updateStatistics(final Type foodType) {
-        final Map<Type, Integer> statistics = snakeInstance.getStatistics();
+        final Map<Type, Integer> statistics = snake.getStatistics();
         final Integer foodTypeCount = statistics.get(foodType);
 
         statistics.put(foodType, foodTypeCount + 1);
     }
 
     private void updateScore(final Type foodType) {
-        snakeInstance.setScore(snakeInstance.getScore() + foodType.getPoints());
+        snake.setScore(snake.getScore() + foodType.getPoints());
     }
 
     private Point getNextLocation() {
-        final Deque<Point> snakeParts = snakeInstance.getSnakeParts();
+        final Deque<Point> snakeParts = snake.getSnakeParts();
         final Point snakeHeadPart = snakeParts.getFirst();
-        final Direction direction = snakeInstance.getDirection();
+        final Direction direction = snake.getDirection();
 
         return direction.apply(snakeHeadPart);
     }
@@ -225,11 +220,11 @@ public class SnakeServiceImpl implements SnakeService {
                 || location.y < 0
                 || location.y == SnakeConstants.HEIGHT;
 
-        return !snakeInstance.getSnakeParts().contains(location) && !isLocationOutOfBounds;
+        return !snake.getSnakeParts().contains(location) && !isLocationOutOfBounds;
     }
 
     private boolean isTimeToHandleMovement() {
-        return snakeInstance.getCurrentMovementFrame() == snakeInstance.getSpeed();
+        return snake.getCurrentMovementFrame() == snake.getSpeed();
     }
 
     private boolean isSnakeRunning() {
@@ -237,6 +232,6 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void resetCurrentMovementFrame() {
-        snakeInstance.setCurrentMovementFrame(0);
+        snake.setCurrentMovementFrame(0);
     }
 }

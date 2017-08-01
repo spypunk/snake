@@ -8,10 +8,14 @@
 
 package spypunk.snake.model;
 
+import java.awt.Point;
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import com.google.common.collect.Lists;
+import spypunk.snake.model.Food.Type;
 
 public class Snake {
 
@@ -21,11 +25,7 @@ public class Snake {
 
     private final URI projectURI;
 
-    private final List<SnakeEvent> snakeEvents = Lists.newArrayList();
-
     private SnakeInstance snakeInstance;
-
-    private State state = State.STOPPED;
 
     private boolean muted;
 
@@ -54,6 +54,8 @@ public class Snake {
         this.name = name;
         this.version = version;
         this.projectURI = projectURI;
+
+        snakeInstance = new SnakeInstance();
     }
 
     public String getName() {
@@ -68,24 +70,8 @@ public class Snake {
         return projectURI;
     }
 
-    public SnakeInstance getSnakeInstance() {
-        return snakeInstance;
-    }
-
     public void setSnakeInstance(final SnakeInstance snakeInstance) {
         this.snakeInstance = snakeInstance;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(final State state) {
-        this.state = state;
-    }
-
-    public List<SnakeEvent> getSnakeEvents() {
-        return snakeEvents;
     }
 
     public boolean isMuted() {
@@ -94,5 +80,89 @@ public class Snake {
 
     public void setMuted(final boolean muted) {
         this.muted = muted;
+    }
+
+    public List<SnakeEvent> getSnakeEvents() {
+        return snakeInstance.getSnakeEvents();
+    }
+
+    public int getScore() {
+        return snakeInstance.getScore();
+    }
+
+    public void setScore(final int score) {
+        snakeInstance.setScore(score);
+    }
+
+    public int getSpeed() {
+        return snakeInstance.getSpeed();
+    }
+
+    public void setSpeed(final int speed) {
+        snakeInstance.setSpeed(speed);
+    }
+
+    public int getCurrentMovementFrame() {
+        return snakeInstance.getCurrentMovementFrame();
+    }
+
+    public void setCurrentMovementFrame(final int currentMoveFrame) {
+        snakeInstance.setCurrentMovementFrame(currentMoveFrame);
+    }
+
+    public LinkedList<Point> getSnakeParts() {
+        return snakeInstance.getSnakeParts();
+    }
+
+    public Direction getDirection() {
+        return snakeInstance.getDirection();
+    }
+
+    public void setDirection(final Direction direction) {
+        snakeInstance.setDirection(direction);
+    }
+
+    public Optional<Direction> getNextDirection() {
+        return snakeInstance.getNextDirection();
+    }
+
+    public void setNextDirection(final Direction direction) {
+        snakeInstance.setNextDirection(direction);
+    }
+
+    public int getFramesSinceLastFoodPopped() {
+        return snakeInstance.getFramesSinceLastFoodPopped();
+    }
+
+    public void setFramesSinceLastFoodPopped(final int framesSinceLastFoodPopped) {
+        snakeInstance.setFramesSinceLastFoodPopped(framesSinceLastFoodPopped);
+    }
+
+    public Food getFood() {
+        return snakeInstance.getFood();
+    }
+
+    public void setFood(final Food food) {
+        snakeInstance.setFood(food);
+    }
+
+    public Map<Type, Integer> getStatistics() {
+        return snakeInstance.getStatistics();
+    }
+
+    public boolean isFoodPopped() {
+        return snakeInstance.isFoodPopped();
+    }
+
+    public void setFoodPopped(final boolean foodPopped) {
+        snakeInstance.setFoodPopped(foodPopped);
+    }
+
+    public State getState() {
+        return snakeInstance.getState();
+    }
+
+    public void setState(final State state) {
+        snakeInstance.setState(state);
     }
 }

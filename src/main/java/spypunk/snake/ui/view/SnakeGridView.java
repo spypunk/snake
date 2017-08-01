@@ -31,14 +31,13 @@ import spypunk.snake.model.Direction;
 import spypunk.snake.model.Food;
 import spypunk.snake.model.Snake;
 import spypunk.snake.model.Snake.State;
-import spypunk.snake.model.SnakeInstance;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.snakepart.SnakePart;
 import spypunk.snake.ui.util.SwingUtils;
 
 @Singleton
-public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
+public class SnakeGridView extends AbstractSnakeView {
 
     private static final String PAUSE = "PAUSE";
 
@@ -59,7 +58,7 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
     private final Map<Point, Rectangle> rectanglesCache = Maps.newHashMap();
 
     @Inject
-    public SnakeInstanceGridView(final FontCache fontCache,
+    public SnakeGridView(final FontCache fontCache,
             final ImageCache imageCache,
             final @SnakeProvider Snake snake) {
         super(fontCache, imageCache, snake);
@@ -90,30 +89,28 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
             return;
         }
 
-        final SnakeInstance snakeInstance = snake.getSnakeInstance();
-
-        final List<Point> snakeParts = snakeInstance.getSnakeParts();
+        final List<Point> snakeParts = snake.getSnakeParts();
 
         for (int i = 0; i < snakeParts.size(); ++i) {
-            final SnakePart snakePart = getSnakePart(snakeInstance, i);
+            final SnakePart snakePart = getSnakePart(i);
             renderSnakePart(graphics, snakeParts.get(i), snakePart);
         }
 
-        renderFood(graphics, snakeInstance);
+        renderFood(graphics);
 
         if (!State.RUNNING.equals(state)) {
             renderSnakeNotRunning(graphics, state);
         }
     }
 
-    private SnakePart getSnakePart(final SnakeInstance snakeInstance, final int i) {
-        final Direction snakeDirection = snakeInstance.getDirection();
+    private SnakePart getSnakePart(final int i) {
+        final Direction snakeDirection = snake.getDirection();
 
         if (i == 0) {
             return getSnakeHeadPart(snakeDirection);
         }
 
-        final List<Point> snakeParts = snakeInstance.getSnakeParts();
+        final List<Point> snakeParts = snake.getSnakeParts();
         final Point nextSnakePartLocation = i < snakeParts.size() - 1 ? snakeParts.get(i + 1) : null;
 
         if (nextSnakePartLocation == null) {
@@ -179,8 +176,8 @@ public class SnakeInstanceGridView extends AbstractSnakeInstanceView {
         }
     }
 
-    private void renderFood(final Graphics2D graphics, final SnakeInstance snakeInstance) {
-        final Food food = snakeInstance.getFood();
+    private void renderFood(final Graphics2D graphics) {
+        final Food food = snake.getFood();
         final Image foodImage = imageCache.getFoodImage(food.getType());
         final Rectangle rectangle = getRectangle(food.getLocation());
 
