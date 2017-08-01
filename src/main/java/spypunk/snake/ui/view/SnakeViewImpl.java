@@ -44,13 +44,13 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
 
     private final JFrame frame;
 
-    private final SnakeGridView snakeInstanceGridView;
+    private final SnakeGridView snakeGridView;
 
-    private final SnakeScoreView snakeInstanceScoreView;
+    private final SnakeScoreView snakeScoreView;
 
-    private final SnakeStatisticView snakeInstanceNormalStatisticView;
+    private final SnakeStatisticView snakeNormalStatisticView;
 
-    private final SnakeStatisticView snakeInstanceBonusStatisticView;
+    private final SnakeStatisticView snakeBonusStatisticView;
 
     private final JLabel muteLabel;
 
@@ -127,15 +127,15 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
             final FontCache fontCache,
             final ImageCache imageCache,
             final @SnakeProvider Snake snake,
-            final SnakeGridView snakeInstanceGridView,
-            final SnakeScoreView snakeInstanceScoreView) {
+            final SnakeGridView snakeGridView,
+            final SnakeScoreView snakeScoreView) {
         super(fontCache, imageCache, snake);
 
-        this.snakeInstanceGridView = snakeInstanceGridView;
-        this.snakeInstanceScoreView = snakeInstanceScoreView;
+        this.snakeGridView = snakeGridView;
+        this.snakeScoreView = snakeScoreView;
 
-        snakeInstanceNormalStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.NORMAL);
-        snakeInstanceBonusStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.BONUS);
+        snakeNormalStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.NORMAL);
+        snakeBonusStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.BONUS);
 
         muteImageIcon = new ImageIcon(imageCache.getIcon(Icon.MUTE));
         unmuteImageIcon = new ImageIcon(imageCache.getIcon(Icon.UNMUTE));
@@ -159,12 +159,12 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
 
         final JPanel statisticsPanel = new JPanel(new BorderLayout(0, 3));
 
-        statisticsPanel.add(snakeInstanceNormalStatisticView.getComponent(), BorderLayout.NORTH);
-        statisticsPanel.add(snakeInstanceBonusStatisticView.getComponent(), BorderLayout.SOUTH);
+        statisticsPanel.add(snakeNormalStatisticView.getComponent(), BorderLayout.NORTH);
+        statisticsPanel.add(snakeBonusStatisticView.getComponent(), BorderLayout.SOUTH);
         statisticsPanel.setBackground(Color.BLACK);
 
         topPanel.add(statisticsPanel, BorderLayout.WEST);
-        topPanel.add(snakeInstanceScoreView.getComponent(), BorderLayout.CENTER);
+        topPanel.add(snakeScoreView.getComponent(), BorderLayout.CENTER);
         topPanel.setBackground(Color.BLACK);
         topPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
 
@@ -175,7 +175,7 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
 
         centerPanel.setBackground(Color.BLACK);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, CELL_SIZE, 0, CELL_SIZE));
-        centerPanel.add(snakeInstanceGridView.getComponent(), BorderLayout.CENTER);
+        centerPanel.add(snakeGridView.getComponent(), BorderLayout.CENTER);
 
         frame = new JFrame(snake.getName() + " " + snake.getVersion());
 
@@ -203,10 +203,10 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
 
     @Override
     public void update() {
-        snakeInstanceGridView.update();
-        snakeInstanceScoreView.update();
-        snakeInstanceNormalStatisticView.update();
-        snakeInstanceBonusStatisticView.update();
+        snakeGridView.update();
+        snakeScoreView.update();
+        snakeNormalStatisticView.update();
+        snakeBonusStatisticView.update();
     }
 
     @Override
