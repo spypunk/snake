@@ -19,8 +19,6 @@ import java.util.stream.IntStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 
 import spypunk.snake.constants.SnakeConstants;
@@ -127,12 +125,12 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private static List<Point> createGridLocations() {
-        final Builder<Point> gridLocations = new ImmutableList.Builder<>();
+        final List<Point> gridLocations = Lists.newArrayList();
 
         IntStream.range(0, SnakeConstants.WIDTH).forEach(
             x -> IntStream.range(0, SnakeConstants.HEIGHT).forEach(y -> gridLocations.add(new Point(x, y))));
 
-        return gridLocations.build();
+        return gridLocations;
     }
 
     private void handleMovement() {
