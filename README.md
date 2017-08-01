@@ -1,6 +1,6 @@
 # snake - Just another Snake clone ![alt tag](src/main/resources/img/icons/icon.png)
 
-[![Release](https://img.shields.io/badge/latest%20release-1.3.0-green.svg)](https://github.com/spypunk/snake/releases/tag/1.3.0) [![Build Status](https://travis-ci.org/spypunk/snake.svg?branch=master)](https://travis-ci.org/spypunk/snake) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4d05e805b7ad406a82f10e7900fb497a)](https://www.codacy.com/app/spypunk/snake?utm_source=github.com&utm_medium=referral&utm_content=spypunk/snake&utm_campaign=Badge_Grade) [![License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png)](http://www.wtfpl.net/) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow)](https://twitter.com/spypunkk)
+[![Release](https://img.shields.io/badge/latest%20release-1.4.0-green.svg)](https://github.com/spypunk/snake/releases/tag/1.4.0) [![Build Status](https://travis-ci.org/spypunk/snake.svg?branch=master)](https://travis-ci.org/spypunk/snake) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4d05e805b7ad406a82f10e7900fb497a)](https://www.codacy.com/app/spypunk/snake?utm_source=github.com&utm_medium=referral&utm_content=spypunk/snake&utm_campaign=Badge_Grade) [![License](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png)](http://www.wtfpl.net/) [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow)](https://twitter.com/spypunkk)
 
 ## How it looks ?
 
