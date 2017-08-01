@@ -9,7 +9,6 @@
 package spypunk.snake.ui.view;
 
 import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
-import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_BORDER_COLOR;
 import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 
 import java.awt.Color;
@@ -41,19 +40,13 @@ public class SnakeGridView extends AbstractSnakeView {
 
     private static final String PAUSE = "PAUSE";
 
-    private static final Color SNAKE_FROZEN_FG_COLOR = new Color(30, 30, 30, 200);
+    private static final Color NOT_RUNNING_FG_COLOR = new Color(30, 30, 30, 200);
 
     private static final String GAME_OVER = "GAME OVER";
 
     private static final String PRESS_SPACE = "PRESS SPACE";
 
     private final Rectangle gridRectangle;
-
-    private final Rectangle frozenGridRectangle;
-
-    private final int x;
-
-    private final int y;
 
     private final Map<Point, Rectangle> rectanglesCache = Maps.newHashMap();
 
@@ -63,25 +56,14 @@ public class SnakeGridView extends AbstractSnakeView {
             final @SnakeProvider Snake snake) {
         super(fontCache, imageCache, snake);
 
-        gridRectangle = new Rectangle(0, 0, SnakeConstants.WIDTH * CELL_SIZE + 1,
-                SnakeConstants.HEIGHT * CELL_SIZE + 1);
+        gridRectangle = new Rectangle(0, 0, SnakeConstants.WIDTH * CELL_SIZE,
+                SnakeConstants.HEIGHT * CELL_SIZE);
 
-        frozenGridRectangle = new Rectangle(gridRectangle.x + 1, gridRectangle.y + 1, gridRectangle.width - 1,
-                gridRectangle.height - 1);
-
-        x = gridRectangle.x + 1;
-        y = gridRectangle.y + 1;
-
-        initializeComponent(gridRectangle.width + 1, gridRectangle.height + 1);
+        initializeComponent(gridRectangle.width, gridRectangle.height, true);
     }
 
     @Override
     protected void doUpdate(final Graphics2D graphics) {
-        graphics.setColor(DEFAULT_BORDER_COLOR);
-
-        graphics.drawRect(gridRectangle.x, gridRectangle.y, gridRectangle.width,
-            gridRectangle.height);
-
         final State state = snake.getState();
 
         if (State.STOPPED.equals(state)) {
@@ -195,8 +177,8 @@ public class SnakeGridView extends AbstractSnakeView {
         Rectangle rectangle;
 
         if (!rectanglesCache.containsKey(location)) {
-            final int x1 = x + location.x * CELL_SIZE;
-            final int y1 = y + location.y * CELL_SIZE;
+            final int x1 = location.x * CELL_SIZE;
+            final int y1 = location.y * CELL_SIZE;
 
             rectangle = new Rectangle(x1, y1, CELL_SIZE, CELL_SIZE);
 
@@ -214,9 +196,9 @@ public class SnakeGridView extends AbstractSnakeView {
     }
 
     private void renderSnakeNotRunning(final Graphics2D graphics, final State state) {
-        graphics.setColor(SNAKE_FROZEN_FG_COLOR);
-        graphics.fillRect(frozenGridRectangle.x, frozenGridRectangle.y, frozenGridRectangle.width,
-            frozenGridRectangle.height);
+        graphics.setColor(NOT_RUNNING_FG_COLOR);
+        graphics.fillRect(gridRectangle.x, gridRectangle.y, gridRectangle.width,
+            gridRectangle.height);
 
         SwingUtils.renderCenteredText(graphics, State.GAME_OVER.equals(state) ? GAME_OVER : PAUSE, gridRectangle,
             fontCache.getFrozenFont(), DEFAULT_FONT_COLOR);

@@ -8,10 +8,12 @@
 
 package spypunk.snake.ui.view;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -28,7 +30,7 @@ public abstract class AbstractSnakeView extends AbstractView {
         super(fontCache, imageCache, snake);
     }
 
-    protected void initializeComponent(final int width, final int height) {
+    protected void initializeComponent(final int width, final int height, final boolean withBorders) {
         component = new JLabel();
 
         final BufferedImage image = new BufferedImage(width, height,
@@ -36,6 +38,14 @@ public abstract class AbstractSnakeView extends AbstractView {
 
         component.setIcon(new ImageIcon(image));
         component.setIgnoreRepaint(true);
+
+        if (withBorders) {
+            component.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        }
+    }
+
+    protected void initializeComponent(final int width, final int height) {
+        initializeComponent(width, height, false);
     }
 
     @Override

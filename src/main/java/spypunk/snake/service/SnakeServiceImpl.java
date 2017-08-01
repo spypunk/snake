@@ -38,6 +38,8 @@ public class SnakeServiceImpl implements SnakeService {
 
     private static final int BONUS_FOOD_FRAME_LIMIT = 120;
 
+    private static final int DEFAULT_SPEED = 3;
+
     private final List<Point> gridLocations = createGridLocations();
 
     private final Random random = new Random();
@@ -60,7 +62,7 @@ public class SnakeServiceImpl implements SnakeService {
         snakeParts.add(new Point(x, 0));
 
         snake.setSnakeInstance(new SnakeInstance());
-        snake.setSpeed(SnakeConstants.DEFAULT_SPEED);
+        snake.setSpeed(DEFAULT_SPEED);
         snake.setDirection(Direction.DOWN);
         snake.getSnakeParts().addAll(snakeParts);
         snake.setState(State.RUNNING);
