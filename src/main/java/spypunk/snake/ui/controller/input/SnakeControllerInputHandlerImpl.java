@@ -88,11 +88,7 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
             return Collections.emptyList();
         }
 
-        return keyCodesHandlers.keySet().stream().filter(keyCode -> isKeyTriggered(keyCode, bitSet))
+        return keyCodesHandlers.keySet().stream().filter(bitSet::get)
                 .map(keyCodesHandlers::get).collect(Collectors.toList());
-    }
-
-    private boolean isKeyTriggered(final int keyCode, final BitSet bitSet) {
-        return bitSet.get(keyCode);
     }
 }
