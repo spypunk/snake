@@ -80,9 +80,7 @@ public class SnakeServiceImpl implements SnakeService {
 
         handleMovement();
         handleBonusFood();
-
-        snakeInstance.setCurrentMovementFrame(snakeInstance.getCurrentMovementFrame() + 1);
-        snakeInstance.setFramesSinceLastFood(snakeInstance.getFramesSinceLastFood() + 1);
+        handleFoodPopped();
     }
 
     @Override
@@ -102,6 +100,19 @@ public class SnakeServiceImpl implements SnakeService {
         snake.setMuted(!snake.isMuted());
     }
 
+    private void handleFoodPopped() {
+        if (snakeInstance.isFoodPopped()) {
+            snakeInstance.setFoodPopped(false);
+            snakeInstance.setFramesSinceLastFoodPopped(0);
+        } else {
+            incrementFramesSinceLastFoodPopped();
+        }
+    }
+
+    private void incrementFramesSinceLastFoodPopped() {
+        snakeInstance.setFramesSinceLastFoodPopped(snakeInstance.getFramesSinceLastFoodPopped() + 1);
+    }
+
     private void popNextFood() {
         final List<Point> possibleFoodLocations = Lists.newArrayList(gridLocations);
 
@@ -112,7 +123,7 @@ public class SnakeServiceImpl implements SnakeService {
         final Type foodType = random.nextInt(BONUS_FOOD_RANDOM) == 0 ? Type.BONUS : Type.NORMAL;
 
         snakeInstance.setFood(new Food(foodLocation, foodType));
-        snakeInstance.setFramesSinceLastFood(0);
+        snakeInstance.setFoodPopped(true);
     }
 
     private static List<Point> createGridLocations() {
@@ -126,6 +137,7 @@ public class SnakeServiceImpl implements SnakeService {
 
     private void handleMovement() {
         if (!isTimeToHandleMovement()) {
+            incrementCurrentMovementFrame();
             return;
         }
 
@@ -143,11 +155,15 @@ public class SnakeServiceImpl implements SnakeService {
         resetCurrentMovementFrame();
     }
 
+    private void incrementCurrentMovementFrame() {
+        snakeInstance.setCurrentMovementFrame(snakeInstance.getCurrentMovementFrame() + 1);
+    }
+
     private void handleBonusFood() {
         final Food food = snakeInstance.getFood();
         final Type foodType = food.getType();
 
-        if (Type.BONUS.equals(foodType) && snakeInstance.getFramesSinceLastFood() == BONUS_FOOD_FRAME_LIMIT) {
+        if (Type.BONUS.equals(foodType) && snakeInstance.getFramesSinceLastFoodPopped() == BONUS_FOOD_FRAME_LIMIT) {
             popNextFood();
         }
     }

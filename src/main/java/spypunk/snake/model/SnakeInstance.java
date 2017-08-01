@@ -36,7 +36,9 @@ public class SnakeInstance {
 
     private Food food;
 
-    private int framesSinceLastFood;
+    private int framesSinceLastFoodPopped;
+
+    private boolean foodPopped;
 
     public SnakeInstance() {
         statistics = Lists.newArrayList(Type.values()).stream()
@@ -87,12 +89,12 @@ public class SnakeInstance {
         nextDirection = Optional.ofNullable(direction);
     }
 
-    public int getFramesSinceLastFood() {
-        return framesSinceLastFood;
+    public int getFramesSinceLastFoodPopped() {
+        return framesSinceLastFoodPopped;
     }
 
-    public void setFramesSinceLastFood(final int framesSinceLastFood) {
-        this.framesSinceLastFood = framesSinceLastFood;
+    public void setFramesSinceLastFoodPopped(final int framesSinceLastFoodPopped) {
+        this.framesSinceLastFoodPopped = framesSinceLastFoodPopped;
     }
 
     public Food getFood() {
@@ -105,5 +107,13 @@ public class SnakeInstance {
 
     public Map<Type, Integer> getStatistics() {
         return statistics;
+    }
+
+    public boolean isFoodPopped() {
+        return foodPopped;
+    }
+
+    public void setFoodPopped(final boolean foodPopped) {
+        this.foodPopped = foodPopped;
     }
 }
