@@ -9,12 +9,10 @@
 package spypunk.snake.service;
 
 import java.awt.Point;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.inject.Inject;
@@ -76,15 +74,15 @@ public class SnakeServiceImpl implements SnakeService {
 
     @Override
     public void update() {
-        if (!isSnakeInstanceRunning()) {
+        if (!isSnakeRunning()) {
             return;
         }
 
-        snakeInstance.setCurrentMovementFrame(snakeInstance.getCurrentMovementFrame() + 1);
-        snakeInstance.setFramesSinceLastFood(snakeInstance.getFramesSinceLastFood() + 1);
-
         handleMovement();
         handleBonusFood();
+
+        snakeInstance.setCurrentMovementFrame(snakeInstance.getCurrentMovementFrame() + 1);
+        snakeInstance.setFramesSinceLastFood(snakeInstance.getFramesSinceLastFood() + 1);
     }
 
     @Override
@@ -94,7 +92,7 @@ public class SnakeServiceImpl implements SnakeService {
 
     @Override
     public void updateDirection(final Direction direction) {
-        if (isSnakeInstanceRunning()) {
+        if (isSnakeRunning()) {
             snakeInstance.setNextDirection(direction);
         }
     }
@@ -105,26 +103,25 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void popNextFood() {
-        final List<Point> snakeParts = snakeInstance.getSnakeParts();
-        final List<Point> foodPossibleLocations = Lists.newArrayList(gridLocations);
+        final List<Point> possibleFoodLocations = Lists.newArrayList(gridLocations);
 
-        foodPossibleLocations.removeAll(snakeParts);
+        possibleFoodLocations.removeAll(snakeInstance.getSnakeParts());
 
-        final int foodIndex = random.nextInt(foodPossibleLocations.size());
-
-        final Point foodLocation = foodPossibleLocations.get(foodIndex);
-
+        final int foodIndex = random.nextInt(possibleFoodLocations.size());
+        final Point foodLocation = possibleFoodLocations.get(foodIndex);
         final Type foodType = random.nextInt(BONUS_FOOD_RANDOM) == 0 ? Type.BONUS : Type.NORMAL;
 
         snakeInstance.setFood(new Food(foodLocation, foodType));
-
         snakeInstance.setFramesSinceLastFood(0);
     }
 
     private static List<Point> createGridLocations() {
-        return IntStream.range(0, SnakeConstants.WIDTH).mapToObj(
-            x -> IntStream.range(0, SnakeConstants.HEIGHT).mapToObj(y -> new Point(x, y)).collect(Collectors.toList()))
-                .flatMap(Collection::stream).collect(Collectors.toList());
+        final List<Point> gridLocations = Lists.newArrayList();
+
+        IntStream.range(0, SnakeConstants.WIDTH).forEach(
+            x -> IntStream.range(0, SnakeConstants.HEIGHT).forEach(y -> gridLocations.add(new Point(x, y))));
+
+        return gridLocations;
     }
 
     private void handleMovement() {
@@ -134,8 +131,10 @@ public class SnakeServiceImpl implements SnakeService {
 
         handleDirection();
 
-        if (canSnakeMove()) {
-            moveSnake();
+        final Point nextLocation = getNextLocation();
+
+        if (canSnakeMove(nextLocation)) {
+            moveSnake(nextLocation);
         } else {
             snake.setState(State.GAME_OVER);
             snake.getSnakeEvents().add(SnakeEvent.GAME_OVER);
@@ -164,23 +163,19 @@ public class SnakeServiceImpl implements SnakeService {
         snakeInstance.setNextDirection(null);
     }
 
-    private void moveSnake() {
-        final Point newLocation = getSnakeHeadPartNextLocation();
+    private void moveSnake(final Point nextLocation) {
         final List<Point> snakeParts = snakeInstance.getSnakeParts();
-        final List<Point> newSnakeParts = Lists.newArrayList();
+        final List<Point> updatedSnakeParts = Lists.newArrayList();
 
-        newSnakeParts.add(newLocation);
-        newSnakeParts.addAll(snakeParts.subList(0, snakeParts.size() - 1));
-
-        snakeParts.clear();
-        snakeParts.addAll(newSnakeParts);
+        updatedSnakeParts.add(nextLocation);
+        updatedSnakeParts.addAll(snakeParts.subList(0, snakeParts.size() - 1));
 
         final Food food = snakeInstance.getFood();
 
-        if (food.getLocation().equals(newLocation)) {
+        if (food.getLocation().equals(nextLocation)) {
             final Type foodType = food.getType();
 
-            snakeParts.add(snakeParts.get(snakeParts.size() - 1));
+            updatedSnakeParts.add(snakeParts.get(snakeParts.size() - 1));
 
             updateScore(foodType);
             updateStatistics(foodType);
@@ -189,6 +184,9 @@ public class SnakeServiceImpl implements SnakeService {
 
             popNextFood();
         }
+
+        snakeParts.clear();
+        snakeParts.addAll(updatedSnakeParts);
     }
 
     private void updateStatistics(final Type foodType) {
@@ -202,7 +200,7 @@ public class SnakeServiceImpl implements SnakeService {
         snakeInstance.setScore(snakeInstance.getScore() + foodType.getPoints());
     }
 
-    private Point getSnakeHeadPartNextLocation() {
+    private Point getNextLocation() {
         final List<Point> snakeParts = snakeInstance.getSnakeParts();
         final Point snakeHeadPart = snakeParts.get(0);
         final Direction direction = snakeInstance.getDirection();
@@ -210,21 +208,19 @@ public class SnakeServiceImpl implements SnakeService {
         return direction.apply(snakeHeadPart);
     }
 
-    private boolean canSnakeMove() {
-        final Point newLocation = getSnakeHeadPartNextLocation();
+    private boolean canSnakeMove(final Point location) {
+        final boolean isLocationOutOfBounds = location.x < 0 || location.x == SnakeConstants.WIDTH
+                || location.y < 0
+                || location.y == SnakeConstants.HEIGHT;
 
-        final boolean isLocationOutOfBounds = newLocation.x < 0 || newLocation.x == SnakeConstants.WIDTH
-                || newLocation.y < 0
-                || newLocation.y == SnakeConstants.HEIGHT;
-
-        return !snakeInstance.getSnakeParts().contains(newLocation) && !isLocationOutOfBounds;
+        return !snakeInstance.getSnakeParts().contains(location) && !isLocationOutOfBounds;
     }
 
     private boolean isTimeToHandleMovement() {
         return snakeInstance.getCurrentMovementFrame() == snakeInstance.getSpeed();
     }
 
-    private boolean isSnakeInstanceRunning() {
+    private boolean isSnakeRunning() {
         return State.RUNNING.equals(snake.getState());
     }
 
