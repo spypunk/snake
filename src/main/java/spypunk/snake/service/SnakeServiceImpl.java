@@ -103,7 +103,6 @@ public class SnakeServiceImpl implements SnakeService {
     private void handleFoodPopped() {
         if (snakeInstance.isFoodPopped()) {
             snakeInstance.setFoodPopped(false);
-            snakeInstance.setFramesSinceLastFoodPopped(0);
         } else {
             incrementFramesSinceLastFoodPopped();
         }
@@ -124,6 +123,7 @@ public class SnakeServiceImpl implements SnakeService {
 
         snakeInstance.setFood(new Food(foodLocation, foodType));
         snakeInstance.setFoodPopped(true);
+        snakeInstance.setFramesSinceLastFoodPopped(0);
     }
 
     private static List<Point> createGridLocations() {
