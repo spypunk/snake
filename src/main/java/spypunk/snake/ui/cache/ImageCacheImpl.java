@@ -11,6 +11,7 @@ package spypunk.snake.ui.cache;
 import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -20,8 +21,6 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 import spypunk.snake.exception.SnakeException;
 import spypunk.snake.model.Food.Type;
@@ -86,17 +85,17 @@ public class ImageCacheImpl implements ImageCache {
     }
 
     private static Map<Icon, Image> createIcons() {
-        return Lists.newArrayList(Icon.values()).stream().collect(Collectors.toMap(Function.identity(),
+        return Arrays.asList(Icon.values()).stream().collect(Collectors.toMap(Function.identity(),
             ImageCacheImpl::createIcon));
     }
 
     private static Map<SnakePart, Image> createSnakesImages() {
-        return Lists.newArrayList(SnakePart.values()).stream().collect(Collectors.toMap(Function.identity(),
+        return Arrays.asList(SnakePart.values()).stream().collect(Collectors.toMap(Function.identity(),
             ImageCacheImpl::createSnakeImage));
     }
 
     private static Map<Type, Image> createFoodImages() {
-        return Lists.newArrayList(Type.values()).stream().collect(Collectors.toMap(Function.identity(),
+        return Arrays.asList(Type.values()).stream().collect(Collectors.toMap(Function.identity(),
             ImageCacheImpl::createFoodImage));
     }
 }

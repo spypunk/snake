@@ -9,10 +9,12 @@
 package spypunk.snake.model;
 
 import java.awt.Point;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -47,8 +49,8 @@ public class SnakeInstance {
     private State state = State.STOPPED;
 
     public SnakeInstance() {
-        statistics = Lists.newArrayList(Type.values()).stream()
-                .collect(Collectors.toMap(foodType -> foodType, foodType -> 0));
+        statistics = Arrays.asList(Type.values()).stream()
+                .collect(Collectors.toMap(Function.identity(), foodType -> 0));
     }
 
     public int getScore() {
