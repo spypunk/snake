@@ -126,13 +126,11 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
     public SnakeViewImpl(final SnakeController snakeController,
             final FontCache fontCache,
             final ImageCache imageCache,
-            final @SnakeProvider Snake snake,
-            final SnakeGridView snakeGridView,
-            final SnakeScoreView snakeScoreView) {
+            final @SnakeProvider Snake snake) {
         super(fontCache, imageCache, snake);
 
-        this.snakeGridView = snakeGridView;
-        this.snakeScoreView = snakeScoreView;
+        snakeGridView = new SnakeGridView(fontCache, imageCache, snake);
+        snakeScoreView = new SnakeScoreView(fontCache, imageCache, snake);
 
         snakeNormalStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.NORMAL);
         snakeBonusStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.BONUS);

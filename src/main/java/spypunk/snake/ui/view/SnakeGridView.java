@@ -17,11 +17,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import spypunk.snake.constants.SnakeConstants;
-import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Direction;
 import spypunk.snake.model.Food;
 import spypunk.snake.model.Snake;
@@ -32,7 +28,6 @@ import spypunk.snake.ui.snakepart.SnakePart;
 import spypunk.snake.ui.util.SwingUtils;
 import spypunk.snake.ui.util.SwingUtils.Text;
 
-@Singleton
 public class SnakeGridView extends AbstractSnakeView {
 
     private static final String PAUSE = "PAUSE";
@@ -51,10 +46,9 @@ public class SnakeGridView extends AbstractSnakeView {
 
     private final Text snakePausedText;
 
-    @Inject
     public SnakeGridView(final FontCache fontCache,
             final ImageCache imageCache,
-            final @SnakeProvider Snake snake) {
+            final Snake snake) {
         super(fontCache, imageCache, snake);
 
         gridRectangle = new Rectangle(0, 0, SnakeConstants.WIDTH * CELL_SIZE,

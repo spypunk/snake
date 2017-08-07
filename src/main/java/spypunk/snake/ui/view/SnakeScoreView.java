@@ -13,26 +13,21 @@ import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.swing.SwingConstants;
 
-import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
 import spypunk.snake.ui.util.SwingUtils.Text;
 
-@Singleton
 public class SnakeScoreView extends AbstractSnakeView {
 
     private final Rectangle scoreRectangle = new Rectangle(0, 0, 10 * CELL_SIZE, CELL_SIZE);
 
-    @Inject
     public SnakeScoreView(final FontCache fontCache,
             final ImageCache imageCache,
-            final @SnakeProvider Snake snake) {
+            final Snake snake) {
         super(fontCache, imageCache, snake);
 
         initializeComponent(scoreRectangle.width, scoreRectangle.height);
