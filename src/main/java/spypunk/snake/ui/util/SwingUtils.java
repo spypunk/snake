@@ -8,6 +8,8 @@
 
 package spypunk.snake.ui.util;
 
+import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
+
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -35,6 +37,21 @@ public final class SwingUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SwingUtils.class);
 
+    public static class Text {
+
+        private final String value;
+
+        private final Font font;
+
+        private final Color fontColor;
+
+        public Text(final String value, final Font font) {
+            this.value = value;
+            this.font = font;
+            fontColor = DEFAULT_FONT_COLOR;
+        }
+    }
+
     private SwingUtils() {
         throw new IllegalAccessError();
     }
@@ -60,27 +77,9 @@ public final class SwingUtils {
         }
     }
 
-    public static Rectangle getCenteredImageRectangle(final Image image, final Rectangle rectangle,
-            final double ratio) {
-        final int imageWidth = image.getWidth(null);
-        final int imageHeight = image.getHeight(null);
-
-        final int targetWidth = (int) (imageWidth * ratio);
-        final int targetHeight = (int) (imageHeight * ratio);
-
-        final int x1 = rectangle.x + (rectangle.width - targetWidth) / 2;
-        final int y1 = rectangle.y + (rectangle.height - targetHeight) / 2;
-
-        return new Rectangle(x1, y1, targetWidth, targetHeight);
-    }
-
-    public static Rectangle getCenteredImageRectangle(final Image image, final Rectangle rectangle) {
-        return getCenteredImageRectangle(image, rectangle, 1);
-    }
-
-    public static Rectangle getCenteredTextRectangle(final Graphics2D graphics, final String text,
-            final Rectangle rectangle, final Font font) {
-        final Rectangle2D textBounds = getTextBounds(graphics, text, font);
+    private static Rectangle getCenteredTextRectangle(final Graphics2D graphics, final Rectangle rectangle,
+            final Text text) {
+        final Rectangle2D textBounds = getTextBounds(graphics, text);
 
         final int x1 = (int) (rectangle.x + (rectangle.width - textBounds.getWidth()) / 2);
         final int y1 = (int) (rectangle.y + (rectangle.height + textBounds.getHeight()) / 2);
@@ -88,9 +87,9 @@ public final class SwingUtils {
         return new Rectangle(x1, y1, (int) textBounds.getWidth(), (int) textBounds.getHeight());
     }
 
-    public static Rectangle2D getTextBounds(final Graphics2D graphics, final String text, final Font font) {
+    private static Rectangle2D getTextBounds(final Graphics2D graphics, final Text text) {
         final FontRenderContext frc = graphics.getFontRenderContext();
-        final GlyphVector gv = font.createGlyphVector(frc, text);
+        final GlyphVector gv = text.font.createGlyphVector(frc, text.value);
 
         return gv.getVisualBounds();
     }
@@ -121,24 +120,14 @@ public final class SwingUtils {
         }
     }
 
-    public static void renderCenteredText(final Graphics2D graphics, final String text, final Rectangle rectangle,
-            final Font font,
-            final Color fontColor) {
-        graphics.setFont(font);
-        graphics.setColor(fontColor);
+    public static void renderCenteredText(final Graphics2D graphics, final Rectangle rectangle,
+            final Text text) {
+        graphics.setFont(text.font);
+        graphics.setColor(text.fontColor);
 
-        final Rectangle textRectangle = SwingUtils.getCenteredTextRectangle(graphics, text, rectangle, font);
+        final Rectangle textRectangle = SwingUtils.getCenteredTextRectangle(graphics, rectangle, text);
 
-        graphics.drawString(text, textRectangle.x, textRectangle.y);
-    }
-
-    public static void renderText(final Graphics2D graphics, final String text, final Rectangle rectangle,
-            final Font font,
-            final Color fontColor) {
-        graphics.setFont(font);
-        graphics.setColor(fontColor);
-
-        graphics.drawString(text, rectangle.x, rectangle.y);
+        graphics.drawString(text.value, textRectangle.x, textRectangle.y);
     }
 
     public static void doInGraphics(final BufferedImage image, final Consumer<Graphics2D> consumer) {

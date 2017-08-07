@@ -9,7 +9,6 @@
 package spypunk.snake.ui.view;
 
 import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
-import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -19,10 +18,11 @@ import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
+import spypunk.snake.ui.util.SwingUtils.Text;
 
 public class SnakeStatisticView extends AbstractSnakeView {
 
-    private final Rectangle scoreRectangle = new Rectangle(CELL_SIZE, 0, 4 * CELL_SIZE, CELL_SIZE);
+    private final Rectangle countRectangle = new Rectangle(CELL_SIZE, 0, 4 * CELL_SIZE, CELL_SIZE);
 
     private final Rectangle foodRectangle = new Rectangle(0, 0, CELL_SIZE, CELL_SIZE);
 
@@ -36,14 +36,15 @@ public class SnakeStatisticView extends AbstractSnakeView {
 
         this.foodType = foodType;
 
-        initializeComponent(foodRectangle.width + scoreRectangle.width, CELL_SIZE);
+        initializeComponent(foodRectangle.width + countRectangle.width, CELL_SIZE);
     }
 
     @Override
     protected void doUpdate(final Graphics2D graphics) {
         final String count = String.valueOf(snake.getStatistics().get(foodType));
+        final Text countText = new Text(count, fontCache.getDefaultFont());
 
-        SwingUtils.renderCenteredText(graphics, count, scoreRectangle, fontCache.getDefaultFont(), DEFAULT_FONT_COLOR);
+        SwingUtils.renderCenteredText(graphics, countRectangle, countText);
 
         SwingUtils.drawImage(graphics, imageCache.getFoodImage(foodType), foodRectangle);
     }

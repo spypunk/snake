@@ -9,7 +9,6 @@
 package spypunk.snake.ui.view;
 
 import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
-import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -23,6 +22,7 @@ import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.util.SwingUtils;
+import spypunk.snake.ui.util.SwingUtils.Text;
 
 @Singleton
 public class SnakeScoreView extends AbstractSnakeView {
@@ -43,7 +43,8 @@ public class SnakeScoreView extends AbstractSnakeView {
     @Override
     protected void doUpdate(final Graphics2D graphics) {
         final String score = String.valueOf(snake.getScore());
+        final Text scoreText = new Text(score, fontCache.getScoreFont());
 
-        SwingUtils.renderCenteredText(graphics, score, scoreRectangle, fontCache.getScoreFont(), DEFAULT_FONT_COLOR);
+        SwingUtils.renderCenteredText(graphics, scoreRectangle, scoreText);
     }
 }

@@ -9,7 +9,6 @@
 package spypunk.snake.ui.view;
 
 import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
-import static spypunk.snake.ui.constants.SnakeUIConstants.DEFAULT_FONT_COLOR;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -17,12 +16,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.google.common.collect.Maps;
 
 import spypunk.snake.constants.SnakeConstants;
 import spypunk.snake.guice.SnakeModule.SnakeProvider;
@@ -34,6 +30,7 @@ import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.snakepart.SnakePart;
 import spypunk.snake.ui.util.SwingUtils;
+import spypunk.snake.ui.util.SwingUtils.Text;
 
 @Singleton
 public class SnakeGridView extends AbstractSnakeView {
@@ -48,7 +45,11 @@ public class SnakeGridView extends AbstractSnakeView {
 
     private final Rectangle gridRectangle;
 
-    private final Map<Point, Rectangle> rectanglesCache = Maps.newHashMap();
+    private final Text snakeStoppedText;
+
+    private final Text snakeGameOverText;
+
+    private final Text snakePausedText;
 
     @Inject
     public SnakeGridView(final FontCache fontCache,
@@ -58,6 +59,12 @@ public class SnakeGridView extends AbstractSnakeView {
 
         gridRectangle = new Rectangle(0, 0, SnakeConstants.WIDTH * CELL_SIZE,
                 SnakeConstants.HEIGHT * CELL_SIZE);
+
+        snakeStoppedText = new Text(PRESS_SPACE, fontCache.getBiggerFont());
+
+        snakeGameOverText = new Text(GAME_OVER, fontCache.getBiggerFont());
+
+        snakePausedText = new Text(PAUSE, fontCache.getBiggerFont());
 
         initializeComponent(gridRectangle.width, gridRectangle.height, true);
     }
@@ -174,25 +181,14 @@ public class SnakeGridView extends AbstractSnakeView {
     }
 
     private Rectangle getRectangle(final Point location) {
-        Rectangle rectangle;
+        final int x1 = location.x * CELL_SIZE;
+        final int y1 = location.y * CELL_SIZE;
 
-        if (!rectanglesCache.containsKey(location)) {
-            final int x1 = location.x * CELL_SIZE;
-            final int y1 = location.y * CELL_SIZE;
-
-            rectangle = new Rectangle(x1, y1, CELL_SIZE, CELL_SIZE);
-
-            rectanglesCache.put(location, rectangle);
-        } else {
-            rectangle = rectanglesCache.get(location);
-        }
-
-        return rectangle;
+        return new Rectangle(x1, y1, CELL_SIZE, CELL_SIZE);
     }
 
     private void renderSnakeStopped(final Graphics2D graphics) {
-        SwingUtils.renderCenteredText(graphics, PRESS_SPACE, gridRectangle,
-            fontCache.getFrozenFont(), DEFAULT_FONT_COLOR);
+        SwingUtils.renderCenteredText(graphics, gridRectangle, snakeStoppedText);
     }
 
     private void renderSnakeNotRunning(final Graphics2D graphics, final State state) {
@@ -200,7 +196,7 @@ public class SnakeGridView extends AbstractSnakeView {
         graphics.fillRect(gridRectangle.x, gridRectangle.y, gridRectangle.width,
             gridRectangle.height);
 
-        SwingUtils.renderCenteredText(graphics, State.GAME_OVER.equals(state) ? GAME_OVER : PAUSE, gridRectangle,
-            fontCache.getFrozenFont(), DEFAULT_FONT_COLOR);
+        SwingUtils.renderCenteredText(graphics, gridRectangle,
+            State.GAME_OVER.equals(state) ? snakeGameOverText : snakePausedText);
     }
 }
