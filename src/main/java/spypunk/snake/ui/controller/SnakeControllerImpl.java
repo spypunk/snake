@@ -13,8 +13,6 @@ import javax.inject.Singleton;
 
 import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Snake;
-import spypunk.snake.service.SnakeService;
-import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandler;
 import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
 import spypunk.snake.ui.util.SwingUtils;
@@ -22,8 +20,6 @@ import spypunk.snake.ui.view.SnakeView;
 
 @Singleton
 public class SnakeControllerImpl implements SnakeController {
-
-    private final SnakeService snakeService;
 
     private final SnakeView snakeView;
 
@@ -33,17 +29,12 @@ public class SnakeControllerImpl implements SnakeController {
 
     private final SnakeControllerInputHandler snakeControllerInputHandler;
 
-    private final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler;
-
     @Inject
-    public SnakeControllerImpl(final SnakeControllerGameLoop snakeControllerGameLoop, final SnakeService snakeService,
+    public SnakeControllerImpl(final SnakeControllerGameLoop snakeControllerGameLoop,
             final SnakeControllerInputHandler snakeControllerInputHandler,
-            final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler,
             final @SnakeProvider Snake snake,
             final SnakeView snakeView) {
-        this.snakeService = snakeService;
         this.snakeControllerInputHandler = snakeControllerInputHandler;
-        this.snakeControllersnakeEventHandler = snakeControllersnakeEventHandler;
         this.snakeControllerGameLoop = snakeControllerGameLoop;
         this.snake = snake;
         this.snakeView = snakeView;
@@ -67,17 +58,6 @@ public class SnakeControllerImpl implements SnakeController {
     @Override
     public void onURLOpen() {
         SwingUtils.openURI(snake.getProjectURI());
-    }
-
-    @Override
-    public void onGameLoopUpdate() {
-        snakeControllerInputHandler.handleInputs();
-
-        snakeService.update();
-
-        snakeControllersnakeEventHandler.handleEvents();
-
-        snakeView.update();
     }
 
     @Override

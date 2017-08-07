@@ -17,7 +17,10 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import spypunk.snake.ui.controller.SnakeController;
+import spypunk.snake.service.SnakeService;
+import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandler;
+import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
+import spypunk.snake.ui.view.SnakeView;
 
 @Singleton
 public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoop, Runnable {
@@ -30,15 +33,27 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
 
     private final ExecutorService executorService;
 
-    private final SnakeController snakeController;
+    private final SnakeService snakeService;
+
+    private final SnakeView snakeView;
+
+    private final SnakeControllerInputHandler snakeControllerInputHandler;
+
+    private final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler;
 
     private volatile boolean running;
 
     @Inject
-    public SnakeControllerGameLoopImpl(final SnakeController snakeController) {
+    public SnakeControllerGameLoopImpl(final SnakeService snakeService, final SnakeView snakeView,
+            final SnakeControllerInputHandler snakeControllerInputHandler,
+            final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler) {
+        this.snakeService = snakeService;
+        this.snakeView = snakeView;
+        this.snakeControllerInputHandler = snakeControllerInputHandler;
+        this.snakeControllersnakeEventHandler = snakeControllersnakeEventHandler;
+
         executorService = Executors
                 .newSingleThreadExecutor(runnable -> new Thread(runnable, "SnakeControllerGameLoop"));
-        this.snakeController = snakeController;
     }
 
     @Override
@@ -58,13 +73,23 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
         while (running) {
             long currentTick = System.currentTimeMillis();
 
-            snakeController.onGameLoopUpdate();
+            update();
 
             for (final long nextTick = currentTick + SKIP_TICKS; currentTick < nextTick; currentTick = System
                     .currentTimeMillis()) {
                 waitMore();
             }
         }
+    }
+
+    private void update() {
+        snakeControllerInputHandler.handleInputs();
+
+        snakeService.update();
+
+        snakeControllersnakeEventHandler.handleEvents();
+
+        snakeView.update();
     }
 
     private void waitMore() {
