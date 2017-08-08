@@ -9,6 +9,7 @@
 package spypunk.snake.service;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public class SnakeServiceImpl implements SnakeService {
     private static final int BONUS_FOOD_FRAME_LIMIT = 120;
 
     private static final int DEFAULT_SPEED = 3;
+
+    private final Rectangle gridRectangle = new Rectangle(0, 0, SnakeConstants.WIDTH, SnakeConstants.HEIGHT);
 
     private final List<Point> gridLocations = createGridLocations();
 
@@ -218,14 +221,7 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private boolean canSnakeMove(final Point location) {
-        if (location.x < 0 || location.x == SnakeConstants.WIDTH
-                || location.y < 0
-                || location.y == SnakeConstants.HEIGHT) {
-
-            return false;
-        }
-
-        return !snake.getSnakePartLocations().contains(location);
+        return gridRectangle.contains(location) && !snake.getSnakePartLocations().contains(location);
     }
 
     private boolean isTimeToHandleMovement() {
