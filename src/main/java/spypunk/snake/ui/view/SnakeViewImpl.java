@@ -178,7 +178,7 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
         frame = new JFrame(snake.getName() + " " + snake.getVersion());
 
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.getContentPane().setLayout(new BorderLayout(0, 0));
+        frame.setLayout(new BorderLayout(0, 0));
         frame.setResizable(false);
         frame.addWindowListener(new SnakeViewWindowListener(snakeController));
         frame.addKeyListener(new SnakeViewKeyAdapter(snakeController));
