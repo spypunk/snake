@@ -26,7 +26,7 @@ public class SnakeInstance {
 
     private final Map<Type, Integer> statistics;
 
-    private final LinkedList<Point> snakeParts = Lists.newLinkedList();
+    private final LinkedList<Point> snakePartLocations = Lists.newLinkedList();
 
     private final List<SnakeEvent> snakeEvents = Lists.newArrayList();
 
@@ -77,8 +77,8 @@ public class SnakeInstance {
         currentMovementFrame = currentMoveFrame;
     }
 
-    public LinkedList<Point> getSnakeParts() {
-        return snakeParts;
+    public LinkedList<Point> getSnakePartLocations() {
+        return snakePartLocations;
     }
 
     public Direction getDirection() {

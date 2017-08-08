@@ -110,8 +110,8 @@ public class Snake {
         snakeInstance.setCurrentMovementFrame(currentMoveFrame);
     }
 
-    public LinkedList<Point> getSnakeParts() {
-        return snakeInstance.getSnakeParts();
+    public LinkedList<Point> getSnakePartLocations() {
+        return snakeInstance.getSnakePartLocations();
     }
 
     public Direction getDirection() {

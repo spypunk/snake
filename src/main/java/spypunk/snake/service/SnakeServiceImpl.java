@@ -53,18 +53,18 @@ public class SnakeServiceImpl implements SnakeService {
 
     @Override
     public void start() {
-        final List<Point> snakeParts = Lists.newArrayList();
+        final List<Point> snakePartLocations = Lists.newArrayList();
 
         final int x = SnakeConstants.WIDTH / 2;
 
-        snakeParts.add(new Point(x, 2));
-        snakeParts.add(new Point(x, 1));
-        snakeParts.add(new Point(x, 0));
+        snakePartLocations.add(new Point(x, 2));
+        snakePartLocations.add(new Point(x, 1));
+        snakePartLocations.add(new Point(x, 0));
 
         snake.setSnakeInstance(new SnakeInstance());
         snake.setSpeed(DEFAULT_SPEED);
         snake.setDirection(Direction.DOWN);
-        snake.getSnakeParts().addAll(snakeParts);
+        snake.getSnakePartLocations().addAll(snakePartLocations);
         snake.setState(State.RUNNING);
 
         popNextFood();
@@ -113,7 +113,7 @@ public class SnakeServiceImpl implements SnakeService {
     private void popNextFood() {
         final List<Point> possibleFoodLocations = Lists.newArrayList(gridLocations);
 
-        possibleFoodLocations.removeAll(snake.getSnakeParts());
+        possibleFoodLocations.removeAll(snake.getSnakePartLocations());
 
         final int foodIndex = random.nextInt(possibleFoodLocations.size());
         final Point foodLocation = possibleFoodLocations.get(foodIndex);
@@ -178,9 +178,9 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private void moveSnake(final Point nextLocation) {
-        final Deque<Point> snakeParts = snake.getSnakeParts();
+        final Deque<Point> snakePartLocations = snake.getSnakePartLocations();
 
-        snakeParts.addFirst(nextLocation);
+        snakePartLocations.addFirst(nextLocation);
 
         final Food food = snake.getFood();
 
@@ -194,7 +194,7 @@ public class SnakeServiceImpl implements SnakeService {
 
             popNextFood();
         } else {
-            snakeParts.removeLast();
+            snakePartLocations.removeLast();
         }
     }
 
@@ -210,11 +210,11 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private Point getNextLocation() {
-        final Deque<Point> snakeParts = snake.getSnakeParts();
-        final Point snakeHeadPart = snakeParts.getFirst();
+        final Deque<Point> snakePartLocations = snake.getSnakePartLocations();
+        final Point snakeHeadPartLocation = snakePartLocations.getFirst();
         final Direction direction = snake.getDirection();
 
-        return direction.apply(snakeHeadPart);
+        return direction.apply(snakeHeadPartLocation);
     }
 
     private boolean canSnakeMove(final Point location) {
@@ -222,7 +222,7 @@ public class SnakeServiceImpl implements SnakeService {
                 || location.y < 0
                 || location.y == SnakeConstants.HEIGHT;
 
-        return !snake.getSnakeParts().contains(location) && !isLocationOutOfBounds;
+        return !snake.getSnakePartLocations().contains(location) && !isLocationOutOfBounds;
     }
 
     private boolean isTimeToHandleMovement() {

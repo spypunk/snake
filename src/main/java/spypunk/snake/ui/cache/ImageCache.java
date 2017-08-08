@@ -18,7 +18,7 @@ public interface ImageCache {
 
     Image getIcon(Icon icon);
 
-    Image getSnakeImage(SnakePart snakePart);
+    Image getSnakePartImage(SnakePart snakePart);
 
     Image getFoodImage(Type foodType);
 }

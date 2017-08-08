@@ -16,6 +16,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableMap;
 
 import spypunk.snake.constants.SnakeConstants;
 import spypunk.snake.model.Direction;
@@ -38,6 +41,10 @@ public class SnakeGridView extends AbstractSnakeView {
 
     private static final String PRESS_SPACE = "PRESS SPACE";
 
+    private static final Map<Direction, SnakePart> SNAKE_HEAD_PARTS = ImmutableMap.of(Direction.DOWN,
+        SnakePart.HEAD_BOTTOM, Direction.LEFT, SnakePart.HEAD_LEFT,
+        Direction.RIGHT, SnakePart.HEAD_RIGHT, Direction.UP, SnakePart.HEAD_TOP);
+
     private final Rectangle gridRectangle;
 
     private final Text snakeStoppedText;
@@ -55,9 +62,7 @@ public class SnakeGridView extends AbstractSnakeView {
                 SnakeConstants.HEIGHT * CELL_SIZE);
 
         snakeStoppedText = new Text(PRESS_SPACE, fontCache.getBiggerFont());
-
         snakeGameOverText = new Text(GAME_OVER, fontCache.getBiggerFont());
-
         snakePausedText = new Text(PAUSE, fontCache.getBiggerFont());
 
         initializeComponent(gridRectangle.width, gridRectangle.height, true);
@@ -72,11 +77,10 @@ public class SnakeGridView extends AbstractSnakeView {
             return;
         }
 
-        final List<Point> snakeParts = snake.getSnakeParts();
+        final List<Point> snakePartLocations = snake.getSnakePartLocations();
 
-        for (int i = 0; i < snakeParts.size(); ++i) {
-            final SnakePart snakePart = getSnakePart(i);
-            renderSnakePart(graphics, snakeParts.get(i), snakePart);
+        for (int i = 0; i < snakePartLocations.size(); ++i) {
+            renderSnakePart(graphics, snakePartLocations, i);
         }
 
         renderFood(graphics);
@@ -86,22 +90,19 @@ public class SnakeGridView extends AbstractSnakeView {
         }
     }
 
-    private SnakePart getSnakePart(final int i) {
-        final Direction snakeDirection = snake.getDirection();
+    private SnakePart getSnakePart(final List<Point> snakePartLocations, final int i) {
+        final Direction direction = snake.getDirection();
 
         if (i == 0) {
-            return getSnakeHeadPart(snakeDirection);
+            return SNAKE_HEAD_PARTS.get(direction);
         }
 
-        final List<Point> snakeParts = snake.getSnakeParts();
-        final Point nextSnakePartLocation = i < snakeParts.size() - 1 ? snakeParts.get(i + 1) : null;
-
-        if (nextSnakePartLocation == null) {
+        if (i == snakePartLocations.size() - 1) {
             return SnakePart.TAIL;
         }
 
-        final Point snakePartLocation = snakeParts.get(i);
-        final Point previousSnakePartLocation = snakeParts.get(i - 1);
+        final Point nextSnakePartLocation = snakePartLocations.get(i + 1);
+        final Point previousSnakePartLocation = snakePartLocations.get(i - 1);
 
         if (previousSnakePartLocation.x == nextSnakePartLocation.x) {
             return SnakePart.VERTICAL;
@@ -111,52 +112,39 @@ public class SnakeGridView extends AbstractSnakeView {
             return SnakePart.HORIZONTAL;
         }
 
-        return getSnakeCornerPart(snakePartLocation, nextSnakePartLocation, previousSnakePartLocation);
+        return getSnakeCornerPart(snakePartLocations.get(i), nextSnakePartLocation, previousSnakePartLocation);
     }
 
     private SnakePart getSnakeCornerPart(final Point snakePartLocation, final Point nextSnakePartLocation,
             final Point previousSnakePartLocation) {
-        final boolean previousXLesser = previousSnakePartLocation.x < snakePartLocation.x;
-        final boolean nextYLesser = nextSnakePartLocation.y < snakePartLocation.y;
-        final boolean nextXLesser = nextSnakePartLocation.x < snakePartLocation.x;
-        final boolean previousYLesser = previousSnakePartLocation.y < snakePartLocation.y;
-        final boolean nextYGreater = nextSnakePartLocation.y > snakePartLocation.y;
-        final boolean previousYGreater = previousSnakePartLocation.y > snakePartLocation.y;
-        final boolean nextXGreater = nextSnakePartLocation.x > snakePartLocation.x;
-        final boolean previousXGreater = previousSnakePartLocation.x > snakePartLocation.x;
 
-        if (previousXLesser && nextYLesser
-                || nextXLesser && previousYLesser) {
+        final boolean previousXLess = previousSnakePartLocation.x < snakePartLocation.x;
+        final boolean nextYLess = nextSnakePartLocation.y < snakePartLocation.y;
+        final boolean nextXLess = nextSnakePartLocation.x < snakePartLocation.x;
+        final boolean previousYLess = previousSnakePartLocation.y < snakePartLocation.y;
+
+        if (previousXLess && nextYLess
+                || nextXLess && previousYLess) {
             return SnakePart.BOTTOM_RIGHT;
         }
 
-        if (previousXLesser && nextYGreater
-                || nextXLesser && previousYGreater) {
+        final boolean nextYGreater = nextSnakePartLocation.y > snakePartLocation.y;
+        final boolean previousYGreater = previousSnakePartLocation.y > snakePartLocation.y;
+
+        if (previousXLess && nextYGreater
+                || nextXLess && previousYGreater) {
             return SnakePart.TOP_RIGHT;
         }
 
-        if (previousYLesser && nextXGreater
-                || nextYLesser && previousXGreater) {
+        final boolean nextXGreater = nextSnakePartLocation.x > snakePartLocation.x;
+        final boolean previousXGreater = previousSnakePartLocation.x > snakePartLocation.x;
+
+        if (previousYLess && nextXGreater
+                || nextYLess && previousXGreater) {
             return SnakePart.BOTTOM_LEFT;
         }
 
         return SnakePart.TOP_LEFT;
-    }
-
-    private SnakePart getSnakeHeadPart(final Direction snakeDirection) {
-        switch (snakeDirection) {
-        case DOWN:
-            return SnakePart.HEAD_BOTTOM;
-
-        case UP:
-            return SnakePart.HEAD_TOP;
-
-        case LEFT:
-            return SnakePart.HEAD_LEFT;
-
-        default:
-            return SnakePart.HEAD_RIGHT;
-        }
     }
 
     private void renderFood(final Graphics2D graphics) {
@@ -167,11 +155,12 @@ public class SnakeGridView extends AbstractSnakeView {
         SwingUtils.drawImage(graphics, foodImage, rectangle);
     }
 
-    private void renderSnakePart(final Graphics2D graphics, final Point location, final SnakePart snakePart) {
-        final Image snakeImage = imageCache.getSnakeImage(snakePart);
-        final Rectangle rectangle = getRectangle(location);
+    private void renderSnakePart(final Graphics2D graphics, final List<Point> snakePartLocations, final int i) {
+        final SnakePart snakePart = getSnakePart(snakePartLocations, i);
+        final Image snakePartImage = imageCache.getSnakePartImage(snakePart);
+        final Rectangle snakePartRectangle = getRectangle(snakePartLocations.get(i));
 
-        SwingUtils.drawImage(graphics, snakeImage, rectangle);
+        SwingUtils.drawImage(graphics, snakePartImage, snakePartRectangle);
     }
 
     private Rectangle getRectangle(final Point location) {

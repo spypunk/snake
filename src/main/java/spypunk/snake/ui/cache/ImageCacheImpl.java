@@ -42,7 +42,7 @@ public class ImageCacheImpl implements ImageCache {
 
     private final Map<Icon, Image> icons = createIcons();
 
-    private final Map<SnakePart, Image> snakeImages = createSnakesImages();
+    private final Map<SnakePart, Image> snakePartImages = createSnakePartImages();
 
     private final Map<Type, Image> foodImages = createFoodImages();
 
@@ -52,8 +52,8 @@ public class ImageCacheImpl implements ImageCache {
     }
 
     @Override
-    public Image getSnakeImage(final SnakePart snakePart) {
-        return snakeImages.get(snakePart);
+    public Image getSnakePartImage(final SnakePart snakePart) {
+        return snakePartImages.get(snakePart);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ImageCacheImpl implements ImageCache {
         return createImage(ICONS_FOLDER, icon.name().toLowerCase());
     }
 
-    private static Image createSnakeImage(final SnakePart snakePart) {
+    private static Image createSnakePartImage(final SnakePart snakePart) {
         return createImage(SNAKE_FOLDER, snakePart.name().toLowerCase());
     }
 
@@ -89,9 +89,9 @@ public class ImageCacheImpl implements ImageCache {
             ImageCacheImpl::createIcon));
     }
 
-    private static Map<SnakePart, Image> createSnakesImages() {
+    private static Map<SnakePart, Image> createSnakePartImages() {
         return Arrays.asList(SnakePart.values()).stream().collect(Collectors.toMap(Function.identity(),
-            ImageCacheImpl::createSnakeImage));
+            ImageCacheImpl::createSnakePartImage));
     }
 
     private static Map<Type, Image> createFoodImages() {
