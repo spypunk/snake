@@ -10,15 +10,6 @@ package spypunk.snake.ui.controller.input;
 
 public interface SnakeControllerInputHandler {
 
-    enum InputType {
-        MOVEMENT,
-        PAUSE,
-        NEW_GAME,
-        MUTE,
-        INCREASE_VOLUME,
-        DECREASE_VOLUME
-    }
-
     void onKeyPressed(int keyCode);
 
     void onKeyReleased(int keyCode);
