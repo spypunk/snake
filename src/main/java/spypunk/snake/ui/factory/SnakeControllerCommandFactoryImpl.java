@@ -19,7 +19,7 @@ import spypunk.snake.service.SnakeService;
 import spypunk.snake.sound.Sound;
 import spypunk.snake.sound.service.SoundService;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
-import spypunk.snake.ui.view.SnakeView;
+import spypunk.snake.ui.view.SnakeMainView;
 
 @Singleton
 public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommandFactory {
@@ -30,17 +30,17 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
 
     private final Snake snake;
 
-    private final SnakeView snakeView;
+    private final SnakeMainView snakeMainView;
 
     @Inject
     public SnakeControllerCommandFactoryImpl(final SnakeService snakeService,
             final SoundService soundService,
             final @SnakeProvider Snake snake,
-            final SnakeView snakeView) {
+            final SnakeMainView snakeMainView) {
         this.snakeService = snakeService;
         this.soundService = soundService;
         this.snake = snake;
-        this.snakeView = snakeView;
+        this.snakeMainView = snakeMainView;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
 
             final boolean muted = snake.isMuted();
 
-            snakeView.setMuted(muted);
+            snakeMainView.setMuted(muted);
             soundService.setMuted(muted);
         };
     }

@@ -8,7 +8,7 @@
 
 package spypunk.snake.ui.view;
 
-public interface SnakeView extends View {
+public interface SnakeMainView extends View {
 
     void show();
 

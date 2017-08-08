@@ -16,12 +16,12 @@ import spypunk.snake.model.Snake;
 import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
 import spypunk.snake.ui.util.SwingUtils;
-import spypunk.snake.ui.view.SnakeView;
+import spypunk.snake.ui.view.SnakeMainView;
 
 @Singleton
 public class SnakeControllerImpl implements SnakeController {
 
-    private final SnakeView snakeView;
+    private final SnakeMainView snakeMainView;
 
     private final Snake snake;
 
@@ -33,16 +33,16 @@ public class SnakeControllerImpl implements SnakeController {
     public SnakeControllerImpl(final SnakeControllerGameLoop snakeControllerGameLoop,
             final SnakeControllerInputHandler snakeControllerInputHandler,
             final @SnakeProvider Snake snake,
-            final SnakeView snakeView) {
+            final SnakeMainView snakeMainView) {
         this.snakeControllerInputHandler = snakeControllerInputHandler;
         this.snakeControllerGameLoop = snakeControllerGameLoop;
         this.snake = snake;
-        this.snakeView = snakeView;
+        this.snakeMainView = snakeMainView;
     }
 
     @Override
     public void start() {
-        snakeView.show();
+        snakeMainView.show();
     }
 
     @Override

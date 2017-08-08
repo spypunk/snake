@@ -40,7 +40,7 @@ import spypunk.snake.ui.icon.Icon;
 import spypunk.snake.ui.util.SwingUtils;
 
 @Singleton
-public class SnakeViewImpl extends AbstractView implements SnakeView {
+public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
     private final JFrame frame;
 
@@ -123,7 +123,7 @@ public class SnakeViewImpl extends AbstractView implements SnakeView {
     }
 
     @Inject
-    public SnakeViewImpl(final SnakeController snakeController,
+    public SnakeMainViewImpl(final SnakeController snakeController,
             final FontCache fontCache,
             final ImageCache imageCache,
             final @SnakeProvider Snake snake) {

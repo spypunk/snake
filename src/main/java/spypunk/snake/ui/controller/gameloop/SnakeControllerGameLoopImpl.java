@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import spypunk.snake.service.SnakeService;
 import spypunk.snake.ui.controller.event.SnakeControllerSnakeEventHandler;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
-import spypunk.snake.ui.view.SnakeView;
+import spypunk.snake.ui.view.SnakeMainView;
 
 @Singleton
 public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoop, Runnable {
@@ -35,7 +35,7 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
 
     private final SnakeService snakeService;
 
-    private final SnakeView snakeView;
+    private final SnakeMainView snakeMainView;
 
     private final SnakeControllerInputHandler snakeControllerInputHandler;
 
@@ -44,11 +44,11 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
     private volatile boolean running;
 
     @Inject
-    public SnakeControllerGameLoopImpl(final SnakeService snakeService, final SnakeView snakeView,
+    public SnakeControllerGameLoopImpl(final SnakeService snakeService, final SnakeMainView snakeMainView,
             final SnakeControllerInputHandler snakeControllerInputHandler,
             final SnakeControllerSnakeEventHandler snakeControllersnakeEventHandler) {
         this.snakeService = snakeService;
-        this.snakeView = snakeView;
+        this.snakeMainView = snakeMainView;
         this.snakeControllerInputHandler = snakeControllerInputHandler;
         this.snakeControllersnakeEventHandler = snakeControllersnakeEventHandler;
 
@@ -89,7 +89,7 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
 
         snakeControllersnakeEventHandler.handleEvents();
 
-        snakeView.update();
+        snakeMainView.update();
     }
 
     private void waitMore() {

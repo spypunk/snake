@@ -47,8 +47,8 @@ import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
 import spypunk.snake.ui.factory.SnakeControllerCommandFactoryImpl;
 import spypunk.snake.ui.font.cache.FontCache;
 import spypunk.snake.ui.font.cache.FontCacheImpl;
-import spypunk.snake.ui.view.SnakeView;
-import spypunk.snake.ui.view.SnakeViewImpl;
+import spypunk.snake.ui.view.SnakeMainView;
+import spypunk.snake.ui.view.SnakeMainViewImpl;
 
 public class SnakeModule extends AbstractModule {
 
@@ -97,7 +97,7 @@ public class SnakeModule extends AbstractModule {
         bind(SnakeControllerInputHandler.class).to(SnakeControllerInputHandlerImpl.class);
         bind(SnakeControllerSnakeEventHandler.class).to(SnakeControllerSnakeEventHandlerImpl.class);
         bind(SnakeControllerGameLoop.class).to(SnakeControllerGameLoopImpl.class);
-        bind(SnakeView.class).to(SnakeViewImpl.class);
+        bind(SnakeMainView.class).to(SnakeMainViewImpl.class);
     }
 
     @Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD })
