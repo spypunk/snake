@@ -218,11 +218,14 @@ public class SnakeServiceImpl implements SnakeService {
     }
 
     private boolean canSnakeMove(final Point location) {
-        final boolean isLocationOutOfBounds = location.x < 0 || location.x == SnakeConstants.WIDTH
+        if (location.x < 0 || location.x == SnakeConstants.WIDTH
                 || location.y < 0
-                || location.y == SnakeConstants.HEIGHT;
+                || location.y == SnakeConstants.HEIGHT) {
 
-        return !snake.getSnakePartLocations().contains(location) && !isLocationOutOfBounds;
+            return false;
+        }
+
+        return !snake.getSnakePartLocations().contains(location);
     }
 
     private boolean isTimeToHandleMovement() {
