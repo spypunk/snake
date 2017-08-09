@@ -9,13 +9,14 @@
 package spypunk.snake.ui.controller.input;
 
 import java.awt.event.KeyEvent;
-import java.util.BitSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import spypunk.snake.model.Direction;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
@@ -24,11 +25,11 @@ import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
 @Singleton
 public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHandler {
 
-    private final BitSet bitSet = new BitSet();
+    private final Set<CommandType> triggeredCommands = Sets.newConcurrentHashSet();
 
     private final Map<Integer, CommandType> keyEventCommandTypes = Maps.newHashMap();
 
-    private final Map<Integer, SnakeControllerCommand> snakeControllerCommands = Maps.newHashMap();
+    private final Map<CommandType, SnakeControllerCommand> snakeControllerCommands = Maps.newHashMap();
 
     private enum InputType {
         KEY_PRESSED,
@@ -67,32 +68,32 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
         keyEventCommandTypes.put(KeyEvent.VK_PAGE_UP, CommandType.INCREASE_VOLUME);
         keyEventCommandTypes.put(KeyEvent.VK_PAGE_DOWN, CommandType.DECREASE_VOLUME);
 
-        snakeControllerCommands.put(CommandType.LEFT.ordinal(),
+        snakeControllerCommands.put(CommandType.LEFT,
             snakeControllerCommandFactory.createDirectionCommand(Direction.LEFT));
 
-        snakeControllerCommands.put(CommandType.RIGHT.ordinal(),
+        snakeControllerCommands.put(CommandType.RIGHT,
             snakeControllerCommandFactory.createDirectionCommand(Direction.RIGHT));
 
-        snakeControllerCommands.put(CommandType.UP.ordinal(),
+        snakeControllerCommands.put(CommandType.UP,
             snakeControllerCommandFactory.createDirectionCommand(Direction.UP));
 
-        snakeControllerCommands.put(CommandType.DOWN.ordinal(),
+        snakeControllerCommands.put(CommandType.DOWN,
             snakeControllerCommandFactory.createDirectionCommand(Direction.DOWN));
 
-        snakeControllerCommands.put(CommandType.NEW_GAME.ordinal(),
+        snakeControllerCommands.put(CommandType.NEW_GAME,
             snakeControllerCommandFactory.createNewGameCommand());
 
-        snakeControllerCommands.put(CommandType.PAUSE.ordinal(), snakeControllerCommandFactory.createPauseCommand());
+        snakeControllerCommands.put(CommandType.PAUSE, snakeControllerCommandFactory.createPauseCommand());
 
-        snakeControllerCommands.put(CommandType.MUTE.ordinal(), snakeControllerCommandFactory.createMuteCommand());
+        snakeControllerCommands.put(CommandType.MUTE, snakeControllerCommandFactory.createMuteCommand());
 
-        snakeControllerCommands.put(CommandType.INCREASE_VOLUME.ordinal(),
+        snakeControllerCommands.put(CommandType.INCREASE_VOLUME,
             snakeControllerCommandFactory.createIncreaseVolumeCommand());
 
-        snakeControllerCommands.put(CommandType.DECREASE_VOLUME.ordinal(),
+        snakeControllerCommands.put(CommandType.DECREASE_VOLUME,
             snakeControllerCommandFactory.createDecreaseVolumeCommand());
 
-        snakeControllerCommands.put(CommandType.OPEN_PROJECT_URI.ordinal(),
+        snakeControllerCommands.put(CommandType.OPEN_PROJECT_URI,
             snakeControllerCommandFactory.createOpenProjectURICommand());
     }
 
@@ -108,19 +109,14 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
 
     @Override
     public void onProjectURIClicked() {
-        bitSet.set(CommandType.OPEN_PROJECT_URI.ordinal());
+        triggeredCommands.add(CommandType.OPEN_PROJECT_URI);
     }
 
     @Override
     public void handleInputs() {
-        if (bitSet.isEmpty()) {
-            return;
-        }
+        triggeredCommands.stream().map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
 
-        snakeControllerCommands.keySet().stream().filter(bitSet::get)
-                .map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
-
-        bitSet.clear();
+        triggeredCommands.clear();
     }
 
     private void onKey(final int keyCode, final InputType inputType) {
@@ -129,7 +125,7 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
             final CommandType commandType = keyEventCommandTypes.get(keyCode);
 
             if (inputType.equals(commandType.inputType)) {
-                bitSet.set(commandType.ordinal());
+                triggeredCommands.add(commandType);
             }
         }
     }
