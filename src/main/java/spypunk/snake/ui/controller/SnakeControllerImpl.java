@@ -11,19 +11,14 @@ package spypunk.snake.ui.controller;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import spypunk.snake.guice.SnakeModule.SnakeProvider;
-import spypunk.snake.model.Snake;
 import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
-import spypunk.snake.ui.util.SwingUtils;
 import spypunk.snake.ui.view.SnakeMainView;
 
 @Singleton
 public class SnakeControllerImpl implements SnakeController {
 
     private final SnakeMainView snakeMainView;
-
-    private final Snake snake;
 
     private final SnakeControllerGameLoop snakeControllerGameLoop;
 
@@ -32,11 +27,9 @@ public class SnakeControllerImpl implements SnakeController {
     @Inject
     public SnakeControllerImpl(final SnakeControllerGameLoop snakeControllerGameLoop,
             final SnakeControllerInputHandler snakeControllerInputHandler,
-            final @SnakeProvider Snake snake,
             final SnakeMainView snakeMainView) {
         this.snakeControllerInputHandler = snakeControllerInputHandler;
         this.snakeControllerGameLoop = snakeControllerGameLoop;
-        this.snake = snake;
         this.snakeMainView = snakeMainView;
     }
 
@@ -56,8 +49,8 @@ public class SnakeControllerImpl implements SnakeController {
     }
 
     @Override
-    public void onURLOpen() {
-        SwingUtils.openURI(snake.getProjectURI());
+    public void onProjectURIClicked() {
+        snakeControllerInputHandler.onProjectURIClicked();
     }
 
     @Override

@@ -28,4 +28,6 @@ public interface SnakeControllerCommandFactory {
     SnakeControllerCommand createGameOverCommand();
 
     SnakeControllerCommand createFoodEatenCommand();
+
+    SnakeControllerCommand createOpenProjectURICommand();
 }

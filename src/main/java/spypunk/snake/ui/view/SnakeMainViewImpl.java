@@ -99,26 +99,26 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
     private static final class URLLabelMouseAdapter extends MouseAdapter {
 
         private final SnakeController snakeController;
-        private final JLabel urlLabel;
+        private final JLabel uriLabel;
 
-        URLLabelMouseAdapter(final SnakeController snakeController, final JLabel urlLabel) {
+        URLLabelMouseAdapter(final SnakeController snakeController, final JLabel uriLabel) {
             this.snakeController = snakeController;
-            this.urlLabel = urlLabel;
+            this.uriLabel = uriLabel;
         }
 
         @Override
         public void mouseClicked(final MouseEvent e) {
-            snakeController.onURLOpen();
+            snakeController.onProjectURIClicked();
         }
 
         @Override
         public void mouseEntered(final MouseEvent e) {
-            urlLabel.setForeground(Color.CYAN);
+            uriLabel.setForeground(Color.CYAN);
         }
 
         @Override
         public void mouseExited(final MouseEvent e) {
-            urlLabel.setForeground(DEFAULT_FONT_COLOR);
+            uriLabel.setForeground(DEFAULT_FONT_COLOR);
         }
     }
 
@@ -142,11 +142,11 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
         muteLabel = new JLabel(unmuteImageIcon);
 
-        final JLabel urlLabel = new JLabel(projectURI.getHost() + projectURI.getPath());
+        final JLabel uriLabel = new JLabel(projectURI.getHost() + projectURI.getPath());
 
-        urlLabel.setFont(fontCache.getURLFont());
-        urlLabel.setForeground(DEFAULT_FONT_COLOR);
-        urlLabel.addMouseListener(new URLLabelMouseAdapter(snakeController, urlLabel));
+        uriLabel.setFont(fontCache.getURLFont());
+        uriLabel.setForeground(DEFAULT_FONT_COLOR);
+        uriLabel.addMouseListener(new URLLabelMouseAdapter(snakeController, uriLabel));
 
         final JPanel bottomPanel = new JPanel(new BorderLayout());
 
@@ -167,7 +167,7 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
         topPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
 
         bottomPanel.add(muteLabel, BorderLayout.WEST);
-        bottomPanel.add(urlLabel, BorderLayout.EAST);
+        bottomPanel.add(uriLabel, BorderLayout.EAST);
 
         final JPanel centerPanel = new JPanel(new BorderLayout(CELL_SIZE, 0));
 

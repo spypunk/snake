@@ -19,6 +19,7 @@ import spypunk.snake.service.SnakeService;
 import spypunk.snake.sound.Sound;
 import spypunk.snake.sound.service.SoundService;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
+import spypunk.snake.ui.util.SwingUtils;
 import spypunk.snake.ui.view.SnakeMainView;
 
 @Singleton
@@ -101,5 +102,10 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
     @Override
     public SnakeControllerCommand createFoodEatenCommand() {
         return () -> soundService.playSound(Sound.FOOD_EATEN);
+    }
+
+    @Override
+    public SnakeControllerCommand createOpenProjectURICommand() {
+        return () -> SwingUtils.openURI(snake.getProjectURI());
     }
 }

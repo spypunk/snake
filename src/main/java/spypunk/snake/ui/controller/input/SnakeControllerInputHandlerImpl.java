@@ -10,15 +10,10 @@ package spypunk.snake.ui.controller.input;
 
 import java.awt.event.KeyEvent;
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.apache.commons.collections4.ListUtils;
 
 import com.google.common.collect.Maps;
 
@@ -29,66 +24,113 @@ import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
 @Singleton
 public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHandler {
 
-    private final BitSet pressedKeysBitSet = new BitSet();
+    private final BitSet bitSet = new BitSet();
 
-    private final BitSet releasedKeysBitSet = new BitSet();
+    private final Map<Integer, CommandType> keyEventCommandTypes = Maps.newHashMap();
 
-    private final Map<Integer, SnakeControllerCommand> pressedKeyCodesHandlers = Maps.newHashMap();
+    private final Map<Integer, SnakeControllerCommand> snakeControllerCommands = Maps.newHashMap();
 
-    private final Map<Integer, SnakeControllerCommand> releasedKeyCodesHandlers = Maps.newHashMap();
+    private enum InputType {
+        KEY_PRESSED,
+        KEY_RELEASED,
+        MOUSE_CLICKED
+    }
+
+    private enum CommandType {
+        LEFT(InputType.KEY_PRESSED),
+        RIGHT(InputType.KEY_PRESSED),
+        UP(InputType.KEY_PRESSED),
+        DOWN(InputType.KEY_PRESSED),
+        NEW_GAME(InputType.KEY_RELEASED),
+        PAUSE(InputType.KEY_RELEASED),
+        MUTE(InputType.KEY_RELEASED),
+        DECREASE_VOLUME(InputType.KEY_RELEASED),
+        INCREASE_VOLUME(InputType.KEY_RELEASED),
+        OPEN_PROJECT_URI(InputType.MOUSE_CLICKED);
+
+        private final InputType inputType;
+
+        private CommandType(final InputType inputType) {
+            this.inputType = inputType;
+        }
+    }
 
     @Inject
     public SnakeControllerInputHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory) {
-        pressedKeyCodesHandlers.put(KeyEvent.VK_LEFT,
+        keyEventCommandTypes.put(KeyEvent.VK_LEFT, CommandType.LEFT);
+        keyEventCommandTypes.put(KeyEvent.VK_RIGHT, CommandType.RIGHT);
+        keyEventCommandTypes.put(KeyEvent.VK_UP, CommandType.UP);
+        keyEventCommandTypes.put(KeyEvent.VK_DOWN, CommandType.DOWN);
+        keyEventCommandTypes.put(KeyEvent.VK_SPACE, CommandType.NEW_GAME);
+        keyEventCommandTypes.put(KeyEvent.VK_P, CommandType.PAUSE);
+        keyEventCommandTypes.put(KeyEvent.VK_M, CommandType.MUTE);
+        keyEventCommandTypes.put(KeyEvent.VK_PAGE_UP, CommandType.INCREASE_VOLUME);
+        keyEventCommandTypes.put(KeyEvent.VK_PAGE_DOWN, CommandType.DECREASE_VOLUME);
+
+        snakeControllerCommands.put(CommandType.LEFT.ordinal(),
             snakeControllerCommandFactory.createDirectionCommand(Direction.LEFT));
 
-        pressedKeyCodesHandlers.put(KeyEvent.VK_RIGHT,
+        snakeControllerCommands.put(CommandType.RIGHT.ordinal(),
             snakeControllerCommandFactory.createDirectionCommand(Direction.RIGHT));
 
-        pressedKeyCodesHandlers.put(KeyEvent.VK_DOWN,
+        snakeControllerCommands.put(CommandType.UP.ordinal(),
+            snakeControllerCommandFactory.createDirectionCommand(Direction.UP));
+
+        snakeControllerCommands.put(CommandType.DOWN.ordinal(),
             snakeControllerCommandFactory.createDirectionCommand(Direction.DOWN));
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_SPACE, snakeControllerCommandFactory.createNewGameCommand());
+        snakeControllerCommands.put(CommandType.NEW_GAME.ordinal(),
+            snakeControllerCommandFactory.createNewGameCommand());
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_P, snakeControllerCommandFactory.createPauseCommand());
+        snakeControllerCommands.put(CommandType.PAUSE.ordinal(), snakeControllerCommandFactory.createPauseCommand());
 
-        pressedKeyCodesHandlers.put(KeyEvent.VK_UP, snakeControllerCommandFactory.createDirectionCommand(Direction.UP));
+        snakeControllerCommands.put(CommandType.MUTE.ordinal(), snakeControllerCommandFactory.createMuteCommand());
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_M, snakeControllerCommandFactory.createMuteCommand());
+        snakeControllerCommands.put(CommandType.INCREASE_VOLUME.ordinal(),
+            snakeControllerCommandFactory.createIncreaseVolumeCommand());
 
-        releasedKeyCodesHandlers.put(KeyEvent.VK_PAGE_UP, snakeControllerCommandFactory.createIncreaseVolumeCommand());
-
-        releasedKeyCodesHandlers.put(KeyEvent.VK_PAGE_DOWN,
+        snakeControllerCommands.put(CommandType.DECREASE_VOLUME.ordinal(),
             snakeControllerCommandFactory.createDecreaseVolumeCommand());
+
+        snakeControllerCommands.put(CommandType.OPEN_PROJECT_URI.ordinal(),
+            snakeControllerCommandFactory.createOpenProjectURICommand());
     }
 
     @Override
     public void onKeyPressed(final int keyCode) {
-        pressedKeysBitSet.set(keyCode);
+        onKey(keyCode, InputType.KEY_PRESSED);
     }
 
     @Override
     public void onKeyReleased(final int keyCode) {
-        releasedKeysBitSet.set(keyCode);
+        onKey(keyCode, InputType.KEY_RELEASED);
+    }
+
+    @Override
+    public void onProjectURIClicked() {
+        bitSet.set(CommandType.OPEN_PROJECT_URI.ordinal());
     }
 
     @Override
     public void handleInputs() {
-        ListUtils.union(getCommandsFromKeys(pressedKeysBitSet, pressedKeyCodesHandlers),
-            getCommandsFromKeys(releasedKeysBitSet, releasedKeyCodesHandlers)).forEach(SnakeControllerCommand::execute);
-
-        pressedKeysBitSet.clear();
-        releasedKeysBitSet.clear();
-    }
-
-    private List<SnakeControllerCommand> getCommandsFromKeys(final BitSet bitSet,
-            final Map<Integer, SnakeControllerCommand> keyCodesHandlers) {
-
         if (bitSet.isEmpty()) {
-            return Collections.emptyList();
+            return;
         }
 
-        return keyCodesHandlers.keySet().stream().filter(bitSet::get)
-                .map(keyCodesHandlers::get).collect(Collectors.toList());
+        snakeControllerCommands.keySet().stream().filter(bitSet::get)
+                .map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
+
+        bitSet.clear();
+    }
+
+    private void onKey(final int keyCode, final InputType inputType) {
+        if (keyEventCommandTypes.containsKey(keyCode)) {
+
+            final CommandType commandType = keyEventCommandTypes.get(keyCode);
+
+            if (inputType.equals(commandType.inputType)) {
+                bitSet.set(commandType.ordinal());
+            }
+        }
     }
 }

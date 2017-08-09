@@ -14,5 +14,7 @@ public interface SnakeControllerInputHandler {
 
     void onKeyReleased(int keyCode);
 
+    void onProjectURIClicked();
+
     void handleInputs();
 }
