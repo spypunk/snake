@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>spypunk</groupId>
     <artifactId>snake</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0-SNAPSHOT</version>
     <description>Just another Snake clone</description>
     <url>https://github.com/spypunk/snake</url>
 
@@ -29,7 +29,7 @@
         <url>git@github.com:spypunk/snake.git</url>
         <connection>scm:git:https://github.com/spypunk/snake.git</connection>
         <developerConnection>scm:git:git@github.com:spypunk/snake.git</developerConnection>
-        <tag>1.6.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <prerequisites>
