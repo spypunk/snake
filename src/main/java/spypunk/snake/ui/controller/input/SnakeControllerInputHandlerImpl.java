@@ -74,14 +74,12 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
         snakeControllerCommands.put(CommandType.RIGHT,
             snakeControllerCommandFactory.createDirectionCommand(Direction.RIGHT));
 
-        snakeControllerCommands.put(CommandType.UP,
-            snakeControllerCommandFactory.createDirectionCommand(Direction.UP));
+        snakeControllerCommands.put(CommandType.UP, snakeControllerCommandFactory.createDirectionCommand(Direction.UP));
 
         snakeControllerCommands.put(CommandType.DOWN,
             snakeControllerCommandFactory.createDirectionCommand(Direction.DOWN));
 
-        snakeControllerCommands.put(CommandType.NEW_GAME,
-            snakeControllerCommandFactory.createNewGameCommand());
+        snakeControllerCommands.put(CommandType.NEW_GAME, snakeControllerCommandFactory.createNewGameCommand());
 
         snakeControllerCommands.put(CommandType.PAUSE, snakeControllerCommandFactory.createPauseCommand());
 
