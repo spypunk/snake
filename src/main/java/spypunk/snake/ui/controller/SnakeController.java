@@ -16,7 +16,7 @@ public interface SnakeController {
 
     void onWindowClosed();
 
-    void onProjectURIClicked();
+    void onProjectURLClicked();
 
     void onKeyPressed(int keyCode);
 

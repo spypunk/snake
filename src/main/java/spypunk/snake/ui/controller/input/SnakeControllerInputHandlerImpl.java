@@ -47,7 +47,7 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
         MUTE(InputType.KEY_RELEASED),
         DECREASE_VOLUME(InputType.KEY_RELEASED),
         INCREASE_VOLUME(InputType.KEY_RELEASED),
-        OPEN_PROJECT_URI(InputType.MOUSE_CLICKED);
+        OPEN_PROJECT_URL(InputType.MOUSE_CLICKED);
 
         private final InputType inputType;
 
@@ -93,8 +93,8 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
         snakeControllerCommands.put(CommandType.DECREASE_VOLUME,
             snakeControllerCommandFactory.createDecreaseVolumeCommand());
 
-        snakeControllerCommands.put(CommandType.OPEN_PROJECT_URI,
-            snakeControllerCommandFactory.createOpenProjectURICommand());
+        snakeControllerCommands.put(CommandType.OPEN_PROJECT_URL,
+            snakeControllerCommandFactory.createOpenProjectURLCommand());
     }
 
     @Override
@@ -108,8 +108,8 @@ public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHand
     }
 
     @Override
-    public void onProjectURIClicked() {
-        triggeredCommands.add(CommandType.OPEN_PROJECT_URI);
+    public void onProjectURLClicked() {
+        triggeredCommands.add(CommandType.OPEN_PROJECT_URL);
     }
 
     @Override

@@ -105,7 +105,7 @@ public class SnakeControllerCommandFactoryImpl implements SnakeControllerCommand
     }
 
     @Override
-    public SnakeControllerCommand createOpenProjectURICommand() {
+    public SnakeControllerCommand createOpenProjectURLCommand() {
         return () -> SwingUtils.openURI(snake.getProjectURI());
     }
 }

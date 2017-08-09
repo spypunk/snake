@@ -29,5 +29,5 @@ public interface SnakeControllerCommandFactory {
 
     SnakeControllerCommand createFoodEatenCommand();
 
-    SnakeControllerCommand createOpenProjectURICommand();
+    SnakeControllerCommand createOpenProjectURLCommand();
 }

@@ -49,8 +49,8 @@ public class SnakeControllerImpl implements SnakeController {
     }
 
     @Override
-    public void onProjectURIClicked() {
-        snakeControllerInputHandler.onProjectURIClicked();
+    public void onProjectURLClicked() {
+        snakeControllerInputHandler.onProjectURLClicked();
     }
 
     @Override
