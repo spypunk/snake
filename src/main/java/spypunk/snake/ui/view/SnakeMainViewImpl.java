@@ -152,12 +152,12 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
         final JPanel statisticsPanel = new JPanel(new BorderLayout(0, 3));
 
-        statisticsPanel.add(snakeNormalStatisticView.getComponent(), BorderLayout.NORTH);
-        statisticsPanel.add(snakeBonusStatisticView.getComponent(), BorderLayout.SOUTH);
+        statisticsPanel.add(snakeNormalStatisticView.getSnakeViewComponent(), BorderLayout.NORTH);
+        statisticsPanel.add(snakeBonusStatisticView.getSnakeViewComponent(), BorderLayout.SOUTH);
         statisticsPanel.setBackground(Color.BLACK);
 
         topPanel.add(statisticsPanel, BorderLayout.WEST);
-        topPanel.add(snakeScoreView.getComponent(), BorderLayout.CENTER);
+        topPanel.add(snakeScoreView.getSnakeViewComponent(), BorderLayout.CENTER);
         topPanel.setBackground(Color.BLACK);
         topPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
 
@@ -168,7 +168,7 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
         centerPanel.setBackground(Color.BLACK);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, CELL_SIZE, 0, CELL_SIZE));
-        centerPanel.add(snakeGridView.getComponent(), BorderLayout.CENTER);
+        centerPanel.add(snakeGridView.getSnakeViewComponent(), BorderLayout.CENTER);
 
         frame = new JFrame(snake.getName() + " " + snake.getVersion());
 

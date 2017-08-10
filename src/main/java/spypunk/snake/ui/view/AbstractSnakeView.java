@@ -10,36 +10,52 @@ package spypunk.snake.ui.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.awt.RenderingHints;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
-import spypunk.snake.ui.util.SwingUtils;
 
 public abstract class AbstractSnakeView extends AbstractView {
 
-    protected JLabel component;
+    protected SnakeViewComponent snakeViewComponent;
+
+    protected final class SnakeViewComponent extends JLabel {
+
+        private static final long serialVersionUID = 6003149880091809914L;
+
+        @Override
+        protected void paintComponent(final Graphics graphics) {
+            super.paintComponent(graphics);
+
+            final Graphics2D graphics2d = (Graphics2D) graphics;
+
+            graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            doUpdate(graphics2d);
+        }
+    }
 
     protected AbstractSnakeView(final FontCache fontCache, final ImageCache imageCache, final Snake snake) {
         super(fontCache, imageCache, snake);
     }
 
     protected void initializeComponent(final int width, final int height, final boolean withBorders) {
-        component = new JLabel();
+        snakeViewComponent = new SnakeViewComponent();
 
-        final BufferedImage image = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_ARGB);
-
-        component.setIcon(new ImageIcon(image));
+        snakeViewComponent.setPreferredSize(new Dimension(width, height));
+        snakeViewComponent.setIgnoreRepaint(true);
 
         if (withBorders) {
-            component.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            snakeViewComponent.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         }
     }
 
@@ -49,15 +65,11 @@ public abstract class AbstractSnakeView extends AbstractView {
 
     @Override
     public void update() {
-        final BufferedImage image = (BufferedImage) ((ImageIcon) component.getIcon()).getImage();
-
-        SwingUtils.doInGraphics(image, this::doUpdate);
-
-        component.repaint();
+        snakeViewComponent.repaint();
     }
 
-    public Component getComponent() {
-        return component;
+    public Component getSnakeViewComponent() {
+        return snakeViewComponent;
     }
 
     protected abstract void doUpdate(final Graphics2D graphics);

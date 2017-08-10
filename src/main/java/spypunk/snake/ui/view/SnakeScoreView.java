@@ -13,8 +13,6 @@ import static spypunk.snake.ui.constants.SnakeUIConstants.CELL_SIZE;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import javax.swing.SwingConstants;
-
 import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
@@ -23,7 +21,7 @@ import spypunk.snake.ui.util.SwingUtils.Text;
 
 public class SnakeScoreView extends AbstractSnakeView {
 
-    private final Rectangle scoreRectangle = new Rectangle(0, 0, 10 * CELL_SIZE, CELL_SIZE);
+    private final Rectangle scoreRectangle = new Rectangle(0, 0, 30 * CELL_SIZE, 2 * CELL_SIZE);
 
     public SnakeScoreView(final FontCache fontCache,
             final ImageCache imageCache,
@@ -31,8 +29,6 @@ public class SnakeScoreView extends AbstractSnakeView {
         super(fontCache, imageCache, snake);
 
         initializeComponent(scoreRectangle.width, scoreRectangle.height);
-
-        component.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     @Override
