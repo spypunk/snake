@@ -37,6 +37,8 @@ public final class SwingUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SwingUtils.class);
 
+    private static final Desktop DESKTOP = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+
     public static class Text {
 
         private final String value;
@@ -105,11 +107,9 @@ public final class SwingUtils {
     }
 
     public static void openURI(final URI uri) {
-        final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+        if (DESKTOP != null && DESKTOP.isSupported(Desktop.Action.BROWSE)) {
             try {
-                desktop.browse(uri);
+                DESKTOP.browse(uri);
             } catch (final IOException e) {
                 LOGGER.warn("Cannot open following URL : " + uri + " | " + e.getMessage(), e);
             }
