@@ -18,113 +18,70 @@ import javax.inject.Singleton;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import spypunk.snake.model.Direction;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
-import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
+import spypunk.snake.ui.controller.command.cache.SnakeControllerCommandCache;
+import spypunk.snake.ui.controller.command.cache.SnakeControllerCommandCache.SnakeControllerCommandType;
 
 @Singleton
 public class SnakeControllerInputHandlerImpl implements SnakeControllerInputHandler {
 
-    private final Set<CommandType> triggeredCommands = Sets.newConcurrentHashSet();
+    private final Set<SnakeControllerCommandType> triggeredCommands = Sets.newConcurrentHashSet();
 
-    private final Map<Integer, CommandType> keyEventCommandTypes = Maps.newHashMap();
+    private final Map<Integer, SnakeControllerCommandType> pressedKeyEventCommandTypes = Maps.newHashMap();
 
-    private final Map<CommandType, SnakeControllerCommand> snakeControllerCommands = Maps.newHashMap();
+    private final Map<Integer, SnakeControllerCommandType> releasedKeyEventCommandTypes = Maps.newHashMap();
 
-    private enum InputType {
-        KEY_PRESSED,
-        KEY_RELEASED,
-        MOUSE_CLICKED
-    }
-
-    private enum CommandType {
-        LEFT(InputType.KEY_PRESSED),
-        RIGHT(InputType.KEY_PRESSED),
-        UP(InputType.KEY_PRESSED),
-        DOWN(InputType.KEY_PRESSED),
-        NEW_GAME(InputType.KEY_RELEASED),
-        PAUSE(InputType.KEY_RELEASED),
-        MUTE(InputType.KEY_RELEASED),
-        DECREASE_VOLUME(InputType.KEY_RELEASED),
-        INCREASE_VOLUME(InputType.KEY_RELEASED),
-        OPEN_PROJECT_URL(InputType.MOUSE_CLICKED);
-
-        private final InputType inputType;
-
-        private CommandType(final InputType inputType) {
-            this.inputType = inputType;
-        }
-    }
+    private final SnakeControllerCommandCache snakeControllerCommandCache;
 
     @Inject
-    public SnakeControllerInputHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory) {
-        keyEventCommandTypes.put(KeyEvent.VK_LEFT, CommandType.LEFT);
-        keyEventCommandTypes.put(KeyEvent.VK_RIGHT, CommandType.RIGHT);
-        keyEventCommandTypes.put(KeyEvent.VK_UP, CommandType.UP);
-        keyEventCommandTypes.put(KeyEvent.VK_DOWN, CommandType.DOWN);
-        keyEventCommandTypes.put(KeyEvent.VK_SPACE, CommandType.NEW_GAME);
-        keyEventCommandTypes.put(KeyEvent.VK_P, CommandType.PAUSE);
-        keyEventCommandTypes.put(KeyEvent.VK_M, CommandType.MUTE);
-        keyEventCommandTypes.put(KeyEvent.VK_PAGE_UP, CommandType.INCREASE_VOLUME);
-        keyEventCommandTypes.put(KeyEvent.VK_PAGE_DOWN, CommandType.DECREASE_VOLUME);
+    public SnakeControllerInputHandlerImpl(final SnakeControllerCommandCache snakeControllerCommandCache) {
+        this.snakeControllerCommandCache = snakeControllerCommandCache;
 
-        snakeControllerCommands.put(CommandType.LEFT,
-            snakeControllerCommandFactory.createDirectionCommand(Direction.LEFT));
+        pressedKeyEventCommandTypes.put(KeyEvent.VK_LEFT, SnakeControllerCommandType.LEFT);
+        pressedKeyEventCommandTypes.put(KeyEvent.VK_RIGHT, SnakeControllerCommandType.RIGHT);
+        pressedKeyEventCommandTypes.put(KeyEvent.VK_DOWN, SnakeControllerCommandType.DOWN);
+        pressedKeyEventCommandTypes.put(KeyEvent.VK_UP, SnakeControllerCommandType.UP);
 
-        snakeControllerCommands.put(CommandType.RIGHT,
-            snakeControllerCommandFactory.createDirectionCommand(Direction.RIGHT));
-
-        snakeControllerCommands.put(CommandType.UP, snakeControllerCommandFactory.createDirectionCommand(Direction.UP));
-
-        snakeControllerCommands.put(CommandType.DOWN,
-            snakeControllerCommandFactory.createDirectionCommand(Direction.DOWN));
-
-        snakeControllerCommands.put(CommandType.NEW_GAME, snakeControllerCommandFactory.createNewGameCommand());
-
-        snakeControllerCommands.put(CommandType.PAUSE, snakeControllerCommandFactory.createPauseCommand());
-
-        snakeControllerCommands.put(CommandType.MUTE, snakeControllerCommandFactory.createMuteCommand());
-
-        snakeControllerCommands.put(CommandType.INCREASE_VOLUME,
-            snakeControllerCommandFactory.createIncreaseVolumeCommand());
-
-        snakeControllerCommands.put(CommandType.DECREASE_VOLUME,
-            snakeControllerCommandFactory.createDecreaseVolumeCommand());
-
-        snakeControllerCommands.put(CommandType.OPEN_PROJECT_URL,
-            snakeControllerCommandFactory.createOpenProjectURLCommand());
+        releasedKeyEventCommandTypes.put(KeyEvent.VK_SPACE, SnakeControllerCommandType.NEW_GAME);
+        releasedKeyEventCommandTypes.put(KeyEvent.VK_P, SnakeControllerCommandType.PAUSE);
+        releasedKeyEventCommandTypes.put(KeyEvent.VK_M, SnakeControllerCommandType.MUTE);
+        releasedKeyEventCommandTypes.put(KeyEvent.VK_PAGE_UP, SnakeControllerCommandType.INCREASE_VOLUME);
+        releasedKeyEventCommandTypes.put(KeyEvent.VK_PAGE_DOWN, SnakeControllerCommandType.DECREASE_VOLUME);
     }
 
     @Override
     public void onKeyPressed(final int keyCode) {
-        onKey(keyCode, InputType.KEY_PRESSED);
+        onKey(keyCode, pressedKeyEventCommandTypes);
     }
 
     @Override
     public void onKeyReleased(final int keyCode) {
-        onKey(keyCode, InputType.KEY_RELEASED);
+        onKey(keyCode, releasedKeyEventCommandTypes);
     }
 
     @Override
     public void onProjectURLClicked() {
-        triggeredCommands.add(CommandType.OPEN_PROJECT_URL);
+        triggeredCommands.add(SnakeControllerCommandType.OPEN_PROJECT_URL);
     }
 
     @Override
     public void handleInputs() {
-        triggeredCommands.stream().map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
+        if (triggeredCommands.isEmpty()) {
+            return;
+        }
+
+        triggeredCommands.stream()
+                .map(snakeControllerCommandCache::getSnakeControllerCommand)
+                .forEach(SnakeControllerCommand::execute);
 
         triggeredCommands.clear();
     }
 
-    private void onKey(final int keyCode, final InputType inputType) {
+    private void onKey(final int keyCode, final Map<Integer, SnakeControllerCommandType> keyEventCommandTypes) {
         if (keyEventCommandTypes.containsKey(keyCode)) {
+            final SnakeControllerCommandType commandType = keyEventCommandTypes.get(keyCode);
 
-            final CommandType commandType = keyEventCommandTypes.get(keyCode);
-
-            if (inputType.equals(commandType.inputType)) {
-                triggeredCommands.add(commandType);
-            }
+            triggeredCommands.add(commandType);
         }
     }
 }

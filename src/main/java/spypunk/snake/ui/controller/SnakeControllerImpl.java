@@ -13,12 +13,9 @@ import javax.inject.Singleton;
 
 import spypunk.snake.ui.controller.gameloop.SnakeControllerGameLoop;
 import spypunk.snake.ui.controller.input.SnakeControllerInputHandler;
-import spypunk.snake.ui.view.SnakeMainView;
 
 @Singleton
 public class SnakeControllerImpl implements SnakeController {
-
-    private final SnakeMainView snakeMainView;
 
     private final SnakeControllerGameLoop snakeControllerGameLoop;
 
@@ -26,20 +23,13 @@ public class SnakeControllerImpl implements SnakeController {
 
     @Inject
     public SnakeControllerImpl(final SnakeControllerGameLoop snakeControllerGameLoop,
-            final SnakeControllerInputHandler snakeControllerInputHandler,
-            final SnakeMainView snakeMainView) {
+            final SnakeControllerInputHandler snakeControllerInputHandler) {
         this.snakeControllerInputHandler = snakeControllerInputHandler;
         this.snakeControllerGameLoop = snakeControllerGameLoop;
-        this.snakeMainView = snakeMainView;
     }
 
     @Override
     public void start() {
-        snakeMainView.show();
-    }
-
-    @Override
-    public void onWindowOpened() {
         snakeControllerGameLoop.start();
     }
 

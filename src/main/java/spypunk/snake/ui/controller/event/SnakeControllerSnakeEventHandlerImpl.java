@@ -20,36 +20,43 @@ import spypunk.snake.guice.SnakeModule.SnakeProvider;
 import spypunk.snake.model.Snake;
 import spypunk.snake.model.SnakeEvent;
 import spypunk.snake.ui.controller.command.SnakeControllerCommand;
-import spypunk.snake.ui.factory.SnakeControllerCommandFactory;
+import spypunk.snake.ui.controller.command.cache.SnakeControllerCommandCache;
+import spypunk.snake.ui.controller.command.cache.SnakeControllerCommandCache.SnakeControllerCommandType;
 
 @Singleton
 public class SnakeControllerSnakeEventHandlerImpl implements SnakeControllerSnakeEventHandler {
 
-    private final Map<SnakeEvent, SnakeControllerCommand> snakeControllerCommands = Maps
+    private final Map<SnakeEvent, SnakeControllerCommandType> snakeControllerCommandTypes = Maps
             .newHashMap();
 
     private final Snake snake;
 
+    private final SnakeControllerCommandCache snakeControllerCommandCache;
+
     @Inject
-    public SnakeControllerSnakeEventHandlerImpl(final SnakeControllerCommandFactory snakeControllerCommandFactory,
+    public SnakeControllerSnakeEventHandlerImpl(final SnakeControllerCommandCache snakeControllerCommandCache,
             final @SnakeProvider Snake snake) {
 
         this.snake = snake;
+        this.snakeControllerCommandCache = snakeControllerCommandCache;
 
-        snakeControllerCommands.put(SnakeEvent.GAME_OVER,
-            snakeControllerCommandFactory.createGameOverCommand());
-
-        snakeControllerCommands.put(SnakeEvent.FOOD_EATEN,
-            snakeControllerCommandFactory.createFoodEatenCommand());
+        snakeControllerCommandTypes.put(SnakeEvent.GAME_OVER, SnakeControllerCommandType.GAME_OVER);
+        snakeControllerCommandTypes.put(SnakeEvent.FOOD_EATEN, SnakeControllerCommandType.FOOD_EATEN);
     }
 
     @Override
     public void handleEvents() {
         final List<SnakeEvent> snakeEvents = snake.getSnakeEvents();
 
-        snakeEvents.stream().map(snakeControllerCommands::get).forEach(SnakeControllerCommand::execute);
+        if (snakeEvents.isEmpty()) {
+            return;
+        }
+
+        snakeEvents.stream()
+                .map(snakeControllerCommandTypes::get)
+                .map(snakeControllerCommandCache::getSnakeControllerCommand)
+                .forEach(SnakeControllerCommand::execute);
 
         snakeEvents.clear();
     }
-
 }

@@ -70,6 +70,8 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
 
     @Override
     public void run() {
+        snakeMainView.show();
+
         while (running) {
             long currentTick = System.currentTimeMillis();
 
@@ -80,6 +82,8 @@ public final class SnakeControllerGameLoopImpl implements SnakeControllerGameLoo
                 waitMore();
             }
         }
+
+        snakeMainView.hide();
     }
 
     private void update() {

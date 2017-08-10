@@ -12,8 +12,6 @@ public interface SnakeController {
 
     void start();
 
-    void onWindowOpened();
-
     void onWindowClosed();
 
     void onProjectURLClicked();

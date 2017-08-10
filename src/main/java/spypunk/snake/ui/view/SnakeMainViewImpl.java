@@ -70,11 +70,6 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
         public void windowClosed(final WindowEvent e) {
             snakeController.onWindowClosed();
         }
-
-        @Override
-        public void windowOpened(final WindowEvent e) {
-            snakeController.onWindowOpened();
-        }
     }
 
     private static final class SnakeViewKeyAdapter extends KeyAdapter {
@@ -194,9 +189,12 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
     @Override
     public void show() {
-        update();
+        setVisible(true);
+    }
 
-        SwingUtils.doInAWTThread(() -> frame.setVisible(true));
+    @Override
+    public void hide() {
+        setVisible(false);
     }
 
     @Override
@@ -210,5 +208,9 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
     @Override
     public void setMuted(final boolean muted) {
         SwingUtils.doInAWTThread(() -> muteLabel.setIcon(muted ? muteImageIcon : unmuteImageIcon));
+    }
+
+    private void setVisible(final boolean visible) {
+        SwingUtils.doInAWTThread(() -> frame.setVisible(visible));
     }
 }
