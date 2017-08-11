@@ -44,14 +44,6 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
     private final JFrame frame;
 
-    private final SnakeGridView snakeGridView;
-
-    private final SnakeScoreView snakeScoreView;
-
-    private final SnakeStatisticView snakeNormalStatisticView;
-
-    private final SnakeStatisticView snakeBonusStatisticView;
-
     private final JLabel muteLabel;
 
     private final ImageIcon muteImageIcon;
@@ -124,11 +116,12 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
             final @SnakeProvider Snake snake) {
         super(fontCache, imageCache, snake);
 
-        snakeGridView = new SnakeGridView(fontCache, imageCache, snake);
-        snakeScoreView = new SnakeScoreView(fontCache, imageCache, snake);
-
-        snakeNormalStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.NORMAL);
-        snakeBonusStatisticView = new SnakeStatisticView(fontCache, imageCache, snake, Type.BONUS);
+        final SnakeGridView snakeGridView = new SnakeGridView(fontCache, imageCache, snake);
+        final SnakeScoreView snakeScoreView = new SnakeScoreView(fontCache, imageCache, snake);
+        final SnakeStatisticView snakeNormalStatisticView = new SnakeStatisticView(fontCache, imageCache, snake,
+                Type.NORMAL);
+        final SnakeStatisticView snakeBonusStatisticView = new SnakeStatisticView(fontCache, imageCache, snake,
+                Type.BONUS);
 
         muteImageIcon = new ImageIcon(imageCache.getIcon(Icon.MUTE));
         unmuteImageIcon = new ImageIcon(imageCache.getIcon(Icon.UNMUTE));
