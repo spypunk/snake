@@ -8,13 +8,12 @@
 
 package spypunk.snake.ui.view;
 
-public interface SnakeMainView extends View {
+public interface SnakeMainView {
 
     void show();
 
     void hide();
 
-    @Override
     void update();
 
     void setMuted(boolean muted);
