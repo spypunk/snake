@@ -32,7 +32,7 @@ public class SnakeScoreView extends AbstractSnakeView {
     }
 
     @Override
-    protected void doUpdate(final Graphics2D graphics) {
+    protected void doPaint(final Graphics2D graphics) {
         final String score = String.valueOf(snake.getScore());
         final Text scoreText = new Text(score, fontCache.getScoreFont());
 

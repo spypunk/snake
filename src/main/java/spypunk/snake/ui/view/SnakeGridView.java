@@ -65,11 +65,11 @@ public class SnakeGridView extends AbstractSnakeView {
         snakeGameOverText = new Text(GAME_OVER, fontCache.getBiggerFont());
         snakePausedText = new Text(PAUSE, fontCache.getBiggerFont());
 
-        initializeComponent(gridRectangle.width, gridRectangle.height, true);
+        initializeComponentWithBorders(gridRectangle.width, gridRectangle.height);
     }
 
     @Override
-    protected void doUpdate(final Graphics2D graphics) {
+    protected void doPaint(final Graphics2D graphics) {
         final State state = snake.getState();
 
         if (State.STOPPED.equals(state)) {

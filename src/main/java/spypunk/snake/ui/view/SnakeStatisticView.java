@@ -40,7 +40,7 @@ public class SnakeStatisticView extends AbstractSnakeView {
     }
 
     @Override
-    protected void doUpdate(final Graphics2D graphics) {
+    protected void doPaint(final Graphics2D graphics) {
         final String count = String.valueOf(snake.getStatistics().get(foodType));
         final Text countText = new Text(count, fontCache.getDefaultFont());
 

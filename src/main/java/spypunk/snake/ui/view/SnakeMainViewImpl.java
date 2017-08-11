@@ -152,12 +152,12 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
         final JPanel statisticsPanel = new JPanel(new BorderLayout(0, 3));
 
-        statisticsPanel.add(snakeNormalStatisticView.getSnakeViewComponent(), BorderLayout.NORTH);
-        statisticsPanel.add(snakeBonusStatisticView.getSnakeViewComponent(), BorderLayout.SOUTH);
+        statisticsPanel.add(snakeNormalStatisticView.getComponent(), BorderLayout.NORTH);
+        statisticsPanel.add(snakeBonusStatisticView.getComponent(), BorderLayout.SOUTH);
         statisticsPanel.setBackground(Color.BLACK);
 
         topPanel.add(statisticsPanel, BorderLayout.WEST);
-        topPanel.add(snakeScoreView.getSnakeViewComponent(), BorderLayout.CENTER);
+        topPanel.add(snakeScoreView.getComponent(), BorderLayout.CENTER);
         topPanel.setBackground(Color.BLACK);
         topPanel.setBorder(BorderFactory.createEmptyBorder(CELL_SIZE / 2, CELL_SIZE, CELL_SIZE / 2, CELL_SIZE));
 
@@ -168,7 +168,7 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
         centerPanel.setBackground(Color.BLACK);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, CELL_SIZE, 0, CELL_SIZE));
-        centerPanel.add(snakeGridView.getSnakeViewComponent(), BorderLayout.CENTER);
+        centerPanel.add(snakeGridView.getComponent(), BorderLayout.CENTER);
 
         frame = new JFrame(snake.getName() + " " + snake.getVersion());
 
@@ -178,6 +178,7 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
         frame.addWindowListener(new SnakeViewWindowListener(snakeController));
         frame.addKeyListener(new SnakeViewKeyAdapter(snakeController));
         frame.setIconImage(imageCache.getIcon(Icon.ICON));
+        frame.setIgnoreRepaint(true);
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(centerPanel, BorderLayout.CENTER);
@@ -199,10 +200,7 @@ public class SnakeMainViewImpl extends AbstractView implements SnakeMainView {
 
     @Override
     public void update() {
-        snakeGridView.update();
-        snakeScoreView.update();
-        snakeNormalStatisticView.update();
-        snakeBonusStatisticView.update();
+        frame.repaint();
     }
 
     @Override

@@ -24,7 +24,7 @@ import spypunk.snake.ui.font.cache.FontCache;
 
 public abstract class AbstractSnakeView extends AbstractView {
 
-    protected SnakeViewComponent snakeViewComponent;
+    private final SnakeViewComponent snakeViewComponent = new SnakeViewComponent();
 
     protected final class SnakeViewComponent extends JLabel {
 
@@ -40,7 +40,7 @@ public abstract class AbstractSnakeView extends AbstractView {
             graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-            doUpdate(graphics2d);
+            doPaint(graphics2d);
         }
     }
 
@@ -48,29 +48,19 @@ public abstract class AbstractSnakeView extends AbstractView {
         super(fontCache, imageCache, snake);
     }
 
-    protected void initializeComponent(final int width, final int height, final boolean withBorders) {
-        snakeViewComponent = new SnakeViewComponent();
-
-        snakeViewComponent.setPreferredSize(new Dimension(width, height));
-        snakeViewComponent.setIgnoreRepaint(true);
-
-        if (withBorders) {
-            snakeViewComponent.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        }
-    }
-
     protected void initializeComponent(final int width, final int height) {
-        initializeComponent(width, height, false);
+        snakeViewComponent.setPreferredSize(new Dimension(width, height));
     }
 
-    @Override
-    public void update() {
-        snakeViewComponent.repaint();
+    protected void initializeComponentWithBorders(final int width, final int height) {
+        initializeComponent(width, height);
+
+        snakeViewComponent.setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
 
-    public Component getSnakeViewComponent() {
+    public Component getComponent() {
         return snakeViewComponent;
     }
 
-    protected abstract void doUpdate(final Graphics2D graphics);
+    protected abstract void doPaint(final Graphics2D graphics);
 }

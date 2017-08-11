@@ -12,7 +12,7 @@ import spypunk.snake.model.Snake;
 import spypunk.snake.ui.cache.ImageCache;
 import spypunk.snake.ui.font.cache.FontCache;
 
-public abstract class AbstractView implements View {
+public abstract class AbstractView {
 
     protected final FontCache fontCache;
 
